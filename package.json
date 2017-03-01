@@ -1,0 +1,32 @@
+{
+  "name": "zip-loader",
+  "version": "0.0.0",
+  "author": "Yomotsu",
+  "license": "MIT",
+  "main": "dist/ZipLoader.js",
+  "repository": "yomotsu/ZipLoader",
+  "jsnext:main": "dist/ZipLoader.module.js",
+  "module": "dist/ZipLoader.module.js",
+  "dependencies": {
+    "pako": "^1.0.4"
+  },
+  "devDependencies": {
+    "babel-preset-env": "1.1.10",
+    "rollup": "^0.41.4",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "7.0.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-watch": "^3.2.2",
+    "uglify-js": "^2.6.0"
+  },
+  "scripts": {
+    "start": "npm run watch",
+    "watch": "rollup --config --watch",
+    "build": "rollup --config",
+    "release": "rollup -c && uglifyjs dist/ZipLoader.js -cm --preamble \"// @yomotsu\" > dist/ZipLoader.min.js"
+  },
+  "engines": {
+    "node": "6.9.4",
+    "npm": "3.10.10"
+  }
+}
