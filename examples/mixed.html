@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>=^.^=</title>
+<style>
+img, video{
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: auto;
+}
+audio{
+	width: 100%;
+}
+.media{}
+.media__title{
+	padding: 10px;
+	background: #CDDC39;
+}
+.media__object{
+	display: block;
+	padding: 10px;
+	margin: 0;
+	background: #F0F4C3;
+}
+pre.media__object{
+	overflow: scroll;
+}
+button{
+	font-size: 20px;
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+<p><a href="./index.html">index</a></p>
+<h1>Multiple file types in 1 zip file</h1>
+<button type="button" id="button">load 3MB ZIP and extract</button>
+
+<div class="media">
+	<div class="media__title">JPEG image</div>
+	<div class="media__object" id="placeholder-jpg"></div>
+</div>
+
+<div class="media">
+	<div class="media__title">SVG image</div>
+	<div class="media__object" id="placeholder-svg"></div>
+</div>
+
+<div class="media">
+	<div class="media__title">Video</div>
+	<div class="media__object" id="placeholder-video"></div>
+</div>
+
+<div class="media">
+	<div class="media__title">Audio</div>
+	<div class="media__object" id="placeholder-audio"></div>
+</div>
+
+<div class="media">
+	<div class="media__title">Text</div>
+	<pre class="media__object" id="placeholder-text"></pre>
+</div>
+
+<div class="media">
+	<div class="media__title">JSON</div>
+	<pre class="media__object" id="placeholder-json"></pre>
+</div>
+
+
+
+<script src="../dist/ZipLoader.js"></script>
+<script>
+var loader = new ZipLoader( './mixed.zip' );
+
+// on progress
+loader.on( 'progress', function ( e ) {
+
+	console.log( 'loading', e.loaded / e.total * 100 + '%' );
+
+} );
+
+// on load
+loader.on( 'load', function ( e ) {
+
+	// ---------------------------------------------------------------------------
+	// jpeg
+	// ---------------------------------------------------------------------------
+	var img1 = new Image();
+
+	img1.onload = function () {
+
+		document.getElementById( 'placeholder-jpg' ).appendChild( img1 );
+		URL.revokeObjectURL( img1.src );
+
+	}
+
+	img1.src = loader.extractAsBlobUrl( 'mixed/poster.jpg', 'image/jpeg' );
+
+
+	// ---------------------------------------------------------------------------
+	// svg
+	// ---------------------------------------------------------------------------
+	var img2 = new Image();
+
+	img2.onload = function () {
+
+		document.getElementById( 'placeholder-svg' ).appendChild( img2 );
+		URL.revokeObjectURL( img2.src );
+
+	}
+
+	img2.src = loader.extractAsBlobUrl( 'mixed/blender.svg', 'image/svg+xml' );
+
+
+	// ---------------------------------------------------------------------------
+	// audio
+	// ---------------------------------------------------------------------------
+	var audio = new Audio();
+
+	audio.oncanplaythrough = function () {
+
+		document.getElementById( 'placeholder-audio' ).appendChild( audio );
+		// URL.revokeObjectURL( audio.src );
+
+	};
+
+	audio.src = loader.extractAsBlobUrl( 'mixed/sound.mp3', 'audio/mp3' );
+	audio.controls = true;
+
+
+	// ---------------------------------------------------------------------------
+	// video
+	// ---------------------------------------------------------------------------
+	var video = document.createElement( 'video' );
+
+	video.oncanplaythrough = function () {
+
+		document.getElementById( 'placeholder-video' ).appendChild( video );
+		// URL.revokeObjectURL( video.src );
+
+	};
+
+	video.src = loader.extractAsBlobUrl( 'mixed/trailer.mp4', 'video/mp4' );
+	video.controls = true;
+
+
+	// ---------------------------------------------------------------------------
+	// text
+	// ---------------------------------------------------------------------------
+	var text = loader.extractAsText( 'mixed/lisence.txt' );
+	document.getElementById( 'placeholder-text' ).innerText = text;
+
+
+	// ---------------------------------------------------------------------------
+	// json
+	// ---------------------------------------------------------------------------
+	var json = JSON.stringify( loader.extractAsJSON( 'mixed/info.json' ) );
+	document.getElementById( 'placeholder-json' ).innerText = json;
+
+
+} );
+
+// on button click
+document.getElementById( 'button' ).addEventListener( 'click', function ( e ) {
+
+	loader.load();
+	e.target.disabled = true;
+
+} );
+</script>
+
+</body>
+</html>

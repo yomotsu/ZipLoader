@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>=^.^=</title>
+<style>
+button{
+	font-size: 20px;
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+<p><a href="./index.html">index</a></p>
+<h1>Load 495 PNGs in one http request</h1>
+<p>Zip archive can contain multiple files. That mean you don't need to concern about number of http connections.</p>
+<button type="button" id="button">load 221KB ZIP and extract 495 images</button>
+
+<script src="../dist/ZipLoader.js"></script>
+<script>
+var loader = new ZipLoader( './496_RPG_icons.zip' );
+
+// on progress
+loader.on( 'progress', function ( e ) {
+
+	console.log( 'loading', e.loaded / e.total * 100 + '%' );
+
+} );
+
+// on load
+loader.on( 'load', function ( e ) {
+
+	Object.keys( loader.files ).forEach( function ( filename ) {
+
+		var img = new Image();
+		var url = loader.extractAsBlobUrl( filename, 'image/png' );
+
+		img.onload = function () {
+
+			document.body.appendChild( img );
+			URL.revokeObjectURL( url );
+
+		}
+
+		img.src = url;
+
+	} );
+
+} );
+
+// on button click
+document.getElementById( 'button' ).addEventListener( 'click', function ( e ) {
+
+	loader.load();
+	e.target.disabled = true;
+
+} );
+</script>
+
+</body>
+</html>
