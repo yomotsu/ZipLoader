@@ -106,6 +106,8 @@ loader.on( 'load', function ( e ) {
 	mesh.position.sub( bufferGeometry.boundingSphere.center );
 	scene.add( mesh );
 
+	loader.clear();
+
 } );
 
 
