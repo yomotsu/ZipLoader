@@ -8,6 +8,7 @@ const ZipLoader = class ZipLoader {
 
 		this._id = count;
 		this._listeners = {};
+		this._blobUrlPool = [];
 		this.url = url;
 		this.files = null;
 		count ++;
@@ -44,7 +45,9 @@ const ZipLoader = class ZipLoader {
 	extractAsBlobUrl ( filename, type ) {
 
 		const blob = new Blob( [ this.files[ filename ] ], { type: type } );
-		return URL.createObjectURL( blob );
+		const url = URL.createObjectURL( blob );
+		this._blobUrlPool.push( url );
+		return url;
 
 	}
 
@@ -180,7 +183,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	destory () {
+	clear () {
 
 		const pattern = `__ziploader_${ this._id }__`;
 
@@ -195,6 +198,13 @@ const ZipLoader = class ZipLoader {
 
 		} );
 
+		this._blobUrlPool.forEach( ( url ) => {
+
+			URL.revokeObjectURL( url );
+
+		} );
+
+		this._blobUrlPool.length = 0;
 		delete this.files;
 
 	}
