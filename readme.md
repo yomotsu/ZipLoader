@@ -1,20 +1,20 @@
 # ZipLoader
 
-![](./examples/logo.png)
+![](./examples/logo.svg)
 
 ZipLoader is a light weight zip file loader and unzipper  for Web browsers.
 (only 25KB (gzipped 9KB) )
 
-[Demos can be seen here](./examples/index.html).
+[Demos can be seen here](https://yomotsu.github.io/ZipLoader/examples/).
 
 ## Usage
 
-Both standalone library version and NPM module version are available.
+Both standalone version and NPM module version are available.
 
 ### Standadone
 
 Copy ZipLoader.js from /dist/ZipLoader.js and place it in your project.
-```
+```html
 <script src="./js/ZipLoader.js"></script>
 ```
 
@@ -24,7 +24,7 @@ $ npm i -save zip-loader
 ```
 
 then
-```
+```javascript
 import ZipLoader from 'zip-loader';
 ```
 
@@ -32,18 +32,18 @@ import ZipLoader from 'zip-loader';
 
 Make a loader instance with a target zip url. Then, `load()` it.
 
-```
+```javascript
 var loader = new ZipLoader( './foldername.zip' );
 loader.load();
 ```
 
 You can get loading progress in `'progress'` event while loading.
 
-When it's done, the zip file will be automatically unzipped and `'load'` event will be triggered.
+When it's done, the zip file is automatically unzipped and `'load'` event will be triggered.
 
 As the result, you will get `files` property under the instance, that consists of filename and binary data.
 
-```
+```javascript
 var loader = new ZipLoader( './foldername.zip' );
 
 loader.on( 'progress', function ( e ) {
@@ -61,6 +61,8 @@ loader.on( 'load', function ( e ) {
   console.log( json );
 
 } );
+
+loader.load();
 ```
 
 ## Pick up unzipped files
@@ -75,12 +77,12 @@ The 1st augment is `key` of `loader.files` object, that represents "path + filen
 
 ### As a text
 
-```
+```javascript
 var string = loader.extractAsText( 'foldername/text.txt' );
 ```
 
 ### As a JSON
-```
+```javascript
 var json = loader.extractAsJSON( 'foldername/data.json' );
 ```
 
@@ -88,7 +90,7 @@ var json = loader.extractAsJSON( 'foldername/data.json' );
 
 The 2nd augument is its MIMEType.
 
-```
+```javascript
 var url = loader.extractAsBlobUrl( 'foldername/pict.jpg', 'image/jpeg' );
 ```
 
@@ -98,7 +100,7 @@ var url = loader.extractAsBlobUrl( 'foldername/pict.jpg', 'image/jpeg' );
 
 ZipLoader can provide altanative JSONLoader for zipped JSON.
 
-```
+```javascript
 // At first, prepare to use THREE.js in ZipLoader
 ZipLoader.use( { 'THREE': THREE } );
 
