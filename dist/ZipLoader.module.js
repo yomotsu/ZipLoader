@@ -3341,6 +3341,7 @@ var ZipLoader = function () {
 
 		this._id = count;
 		this._listeners = {};
+		this._blobUrlPool = [];
 		this.url = url;
 		this.files = null;
 		count++;
@@ -3374,7 +3375,9 @@ var ZipLoader = function () {
 	ZipLoader.prototype.extractAsBlobUrl = function extractAsBlobUrl(filename, type) {
 
 		var blob = new Blob([this.files[filename]], { type: type });
-		return URL.createObjectURL(blob);
+		var url = URL.createObjectURL(blob);
+		this._blobUrlPool.push(url);
+		return url;
 	};
 
 	ZipLoader.prototype.extractAsText = function extractAsText(filename) {
@@ -3486,7 +3489,7 @@ var ZipLoader = function () {
 		}
 	};
 
-	ZipLoader.prototype.destory = function destory() {
+	ZipLoader.prototype.clear = function clear() {
 
 		var pattern = '__ziploader_' + this._id + '__';
 
@@ -3499,6 +3502,12 @@ var ZipLoader = function () {
 			}
 		});
 
+		this._blobUrlPool.forEach(function (url) {
+
+			URL.revokeObjectURL(url);
+		});
+
+		this._blobUrlPool.length = 0;
 		delete this.files;
 	};
 
