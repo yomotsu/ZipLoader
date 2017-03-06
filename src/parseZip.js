@@ -74,8 +74,8 @@ const parseLocalFile = ( reader ) => {
 	const filenameLength   = reader.readBytes( 2 );
 	const extraFieldLength = reader.readBytes( 2 );
 	const filename       = [];
-	const extraField     = [];
-	const compressedData = [];
+	// const extraField     = [];
+	const compressedData = new Uint8Array( compressedSize );
 
 	for ( i = 0; i < filenameLength; i ++ ) {
 
@@ -83,15 +83,16 @@ const parseLocalFile = ( reader ) => {
 
 	}
 
-	for ( i = 0; i < extraFieldLength; i ++ ) {
+	reader.skip( extraFieldLength );
+	// for ( i = 0; i < extraFieldLength; i ++ ) {
 
-		extraField.push( reader.readBytes( 1 ) );
+	// 	extraField.push( reader.readBytes( 1 ) );
 
-	}
+	// }
 
 	for ( i = 0; i < compressedSize; i ++ ) {
 
-		compressedData.push( reader.readBytes( 1 ) );
+		compressedData[ i ] = reader.readBytes( 1 );
 
 	}
 
@@ -101,17 +102,17 @@ const parseLocalFile = ( reader ) => {
 			data = compressedData;
 			break;
 		case 8:
-			data = pako.inflate( new Uint8Array( compressedData ), { raw: true } );
+			data = new Uint8Array( pako.inflate( compressedData, { raw: true } ) );
 			break; 
 		default:
 			console.log( `${ filename.join( '' ) }: unsupported compression type` );
-			data = new Uint8Array( compressedData );
+			data = compressedData;
 
 	}
 
 	return {
 		name: filename.join( '' ),
-		data: new Uint8Array( data )
+		data: data
 	};
 
 }
@@ -161,27 +162,30 @@ const parseCentralDirectory = ( reader ) => {
 	// const internalFileAttrs    = reader.readBytes( 2 );
 	// const externalFileAttrs    = reader.readBytes( 4 );
 	// const relativeOffset       = reader.readBytes( 4 );
-	const filename    = [];
-	const extraField  = [];
-	const fileComment = [];
+	// const filename    = [];
+	// const extraField  = [];
+	// const fileComment = [];
 
-	for ( i = 0; i < filenameLength; i ++ ) {
+	reader.skip( filenameLength );
+	// for ( i = 0; i < filenameLength; i ++ ) {
 
-		filename.push( String.fromCharCode( reader.readBytes( 1 ) ) );
+	// 	filename.push( String.fromCharCode( reader.readBytes( 1 ) ) );
 
-	}
+	// }
 
-	for ( i = 0; i < extraFieldLength; i ++ ) {
+	reader.skip( extraFieldLength );
+	// for ( i = 0; i < extraFieldLength; i ++ ) {
 
-		extraField.push( reader.readBytes( 1 ) );
+	// 	extraField.push( reader.readBytes( 1 ) );
 
-	}
+	// }
 
-	for ( i = 0; i < fileCommentLength; i ++ ) {
+	reader.skip( fileCommentLength );
+	// for ( i = 0; i < fileCommentLength; i ++ ) {
 
-		fileComment.push( reader.readBytes( 1 ) );
+	// 	fileComment.push( reader.readBytes( 1 ) );
 
-	}
+	// }
 
 }
 

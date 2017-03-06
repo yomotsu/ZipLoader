@@ -2,10 +2,19 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs    from 'rollup-plugin-commonjs'
 import babel       from 'rollup-plugin-babel'
 
+const license = `/*!
+ * ZipLoader
+ * (c) 2017 @yomotsu
+ * Released under the MIT License.
+ * 
+ * ZipLoader uses the library pako released under the MIT license :
+ * https://github.com/nodeca/pako/blob/master/LICENSE
+ */`
+
 export default {
   entry: 'src/ZipLoader.js',
   indent: '\t',
-  sourceMap: true,
+  sourceMap: false,
   plugins: [
     nodeResolve( {
       jsnext: true,
@@ -37,11 +46,13 @@ export default {
     {
       format: 'umd',
       moduleName: 'ZipLoader',
-      dest: 'dist/ZipLoader.js'
+      dest: 'dist/ZipLoader.js',
+      banner: license
     },
     {
       format: 'es',
-      dest: 'dist/ZipLoader.module.js'
+      dest: 'dist/ZipLoader.module.js',
+      banner: license
     }
   ]
 };

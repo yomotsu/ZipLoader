@@ -1,8 +1,6 @@
 # ZipLoader
 
-![](https://yomotsu.github.io/ZipLoader/examples/logo.svg)
-
-ZipLoader is a light weight zip file loader and unzipper  for Web browsers.
+ZipLoader is a light weight zip file loader and unzipper for Web browsers.
 (only 25KB (gzipped 9KB) )
 
 [Demos can be seen here](https://yomotsu.github.io/ZipLoader/examples/).

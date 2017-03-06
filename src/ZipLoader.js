@@ -52,7 +52,7 @@ const ZipLoader = class ZipLoader {
 
 		let str = '';
 
-		for ( let i = 0, l = this.files[ filename ].length; i < len; i++ ) {
+		for ( let i = 0, l = this.files[ filename ].length; i < l; i++ ) {
 
 			str += String.fromCharCode( this.files[ filename ][ i ] );
 
@@ -160,16 +160,17 @@ const ZipLoader = class ZipLoader {
 
 			event.target = this;
 
+			let i = 0;
 			const array = [];
 			const length = listenerArray.length;
 
-			for ( let i = 0; i < length; i ++ ) {
+			for ( i = 0; i < length; i ++ ) {
 
 				array[ i ] = listenerArray[ i ];
 
 			}
 
-			for ( let i = 0; i < length; i ++ ) {
+			for ( i = 0; i < length; i ++ ) {
 
 				array[ i ].call( this, event );
 

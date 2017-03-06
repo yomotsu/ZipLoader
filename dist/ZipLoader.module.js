@@ -1,3 +1,11 @@
+/*!
+ * ZipLoader
+ * (c) 2017 @yomotsu
+ * Released under the MIT License.
+ * 
+ * ZipLoader uses the library pako released under the MIT license :
+ * https://github.com/nodeca/pako/blob/master/LICENSE
+ */
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
@@ -3211,22 +3219,24 @@ var parseLocalFile = function parseLocalFile(reader) {
 	var filenameLength = reader.readBytes(2);
 	var extraFieldLength = reader.readBytes(2);
 	var filename = [];
-	var extraField = [];
-	var compressedData = [];
+	// const extraField     = [];
+	var compressedData = new Uint8Array(compressedSize);
 
 	for (i = 0; i < filenameLength; i++) {
 
 		filename.push(String.fromCharCode(reader.readBytes(1)));
 	}
 
-	for (i = 0; i < extraFieldLength; i++) {
+	reader.skip(extraFieldLength);
+	// for ( i = 0; i < extraFieldLength; i ++ ) {
 
-		extraField.push(reader.readBytes(1));
-	}
+	// 	extraField.push( reader.readBytes( 1 ) );
+
+	// }
 
 	for (i = 0; i < compressedSize; i++) {
 
-		compressedData.push(reader.readBytes(1));
+		compressedData[i] = reader.readBytes(1);
 	}
 
 	switch (compression) {
@@ -3235,17 +3245,17 @@ var parseLocalFile = function parseLocalFile(reader) {
 			data = compressedData;
 			break;
 		case 8:
-			data = inflate_1.inflate(new Uint8Array(compressedData), { raw: true });
+			data = new Uint8Array(inflate_1.inflate(compressedData, { raw: true }));
 			break;
 		default:
 			console.log(filename.join('') + ': unsupported compression type');
-			data = new Uint8Array(compressedData);
+			data = compressedData;
 
 	}
 
 	return {
 		name: filename.join(''),
-		data: new Uint8Array(data)
+		data: data
 	};
 };
 
@@ -3294,24 +3304,30 @@ var parseCentralDirectory = function parseCentralDirectory(reader) {
 	// const internalFileAttrs    = reader.readBytes( 2 );
 	// const externalFileAttrs    = reader.readBytes( 4 );
 	// const relativeOffset       = reader.readBytes( 4 );
-	var filename = [];
-	var extraField = [];
-	var fileComment = [];
+	// const filename    = [];
+	// const extraField  = [];
+	// const fileComment = [];
 
-	for (i = 0; i < filenameLength; i++) {
+	reader.skip(filenameLength);
+	// for ( i = 0; i < filenameLength; i ++ ) {
 
-		filename.push(String.fromCharCode(reader.readBytes(1)));
-	}
+	// 	filename.push( String.fromCharCode( reader.readBytes( 1 ) ) );
 
-	for (i = 0; i < extraFieldLength; i++) {
+	// }
 
-		extraField.push(reader.readBytes(1));
-	}
+	reader.skip(extraFieldLength);
+	// for ( i = 0; i < extraFieldLength; i ++ ) {
 
-	for (i = 0; i < fileCommentLength; i++) {
+	// 	extraField.push( reader.readBytes( 1 ) );
 
-		fileComment.push(reader.readBytes(1));
-	}
+	// }
+
+	reader.skip(fileCommentLength);
+	// for ( i = 0; i < fileCommentLength; i ++ ) {
+
+	// 	fileComment.push( reader.readBytes( 1 ) );
+
+	// }
 };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3365,10 +3381,10 @@ var ZipLoader = function () {
 
 		var str = '';
 
-		this.files[filename].forEach(function (charcode) {
+		for (var i = 0, l = this.files[filename].length; i < l; i++) {
 
-			str += String.fromCharCode(charcode);
-		});
+			str += String.fromCharCode(this.files[filename][i]);
+		}
 
 		return str;
 	};
@@ -3454,17 +3470,18 @@ var ZipLoader = function () {
 
 			event.target = this;
 
+			var i = 0;
 			var array = [];
 			var length = listenerArray.length;
 
-			for (var i = 0; i < length; i++) {
+			for (i = 0; i < length; i++) {
 
 				array[i] = listenerArray[i];
 			}
 
-			for (var _i = 0; _i < length; _i++) {
+			for (i = 0; i < length; i++) {
 
-				array[_i].call(this, event);
+				array[i].call(this, event);
 			}
 		}
 	};
@@ -3496,4 +3513,3 @@ ZipLoader.use = function (option) {
 };
 
 export default ZipLoader;
-//# sourceMappingURL=ZipLoader.module.js.map
