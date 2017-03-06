@@ -52,11 +52,11 @@ const ZipLoader = class ZipLoader {
 
 		let str = '';
 
-		this.files[ filename ].forEach( ( charcode ) => {
+		for ( let i = 0, l = this.files[ filename ].length; i < len; i++ ) {
 
-			str += String.fromCharCode( charcode );
+			str += String.fromCharCode( this.files[ filename ][ i ] );
 
-		} );
+		};
 
 		return str;
 
