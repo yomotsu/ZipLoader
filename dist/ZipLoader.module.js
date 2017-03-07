@@ -115,10 +115,6 @@ exports.setTyped = function (on) {
 exports.setTyped(TYPED_OK);
 });
 
-// Note: adler32 takes 12% for level 0 and 2% for level 6.
-// It doesn't worth to make additional optimizationa as in original.
-// Small size is preferable.
-
 function adler32$1(adler, buf, len, pos) {
   var s1 = (adler & 0xffff) |0,
       s2 = ((adler >>> 16) & 0xffff) |0,
@@ -146,12 +142,6 @@ function adler32$1(adler, buf, len, pos) {
 
 var adler32_1 = adler32$1;
 
-// Note: we can't get significant speed boost here.
-// So write code to minimize size - no pregenerated tables
-// and array tools dependencies.
-
-
-// Use ordinary array, since untyped makes no boost here
 function makeTable() {
   var c, table = [];
 
@@ -186,7 +176,6 @@ function crc32$1(crc, buf, len, pos) {
 
 var crc32_1 = crc32$1;
 
-// See state defs from inflate.js
 var BAD$1 = 30;       /* got a data error -- remain here until reset */
 var TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
 
@@ -3167,7 +3156,7 @@ var parseZip = function parseZip(buffer) {
 		if (signature === LOCAL_FILE_HEADER) {
 
 			var file = parseLocalFile(reader);
-			files[file.name] = file.data;
+			files[file.name] = { data: file.data };
 			continue;
 		}
 
@@ -3341,7 +3330,6 @@ var ZipLoader = function () {
 
 		this._id = count;
 		this._listeners = {};
-		this._blobUrlPool = [];
 		this.url = url;
 		this.files = null;
 		count++;
@@ -3350,6 +3338,7 @@ var ZipLoader = function () {
 	ZipLoader.prototype.load = function load() {
 		var _this = this;
 
+		var startTime = Date.now();
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', this.url, true);
 		xhr.responseType = 'arraybuffer';
@@ -3359,14 +3348,18 @@ var ZipLoader = function () {
 			_this.dispatch({
 				type: 'progress',
 				loaded: e.loaded,
-				total: e.total
+				total: e.total,
+				elapsedTime: Date.now() - startTime
 			});
 		};
 
 		xhr.onload = function (e) {
 
 			_this.files = parseZip(xhr.response);
-			_this.dispatch({ type: 'load' });
+			_this.dispatch({
+				type: 'load',
+				elapsedTime: Date.now() - startTime
+			});
 		};
 
 		xhr.send();
@@ -3374,19 +3367,18 @@ var ZipLoader = function () {
 
 	ZipLoader.prototype.extractAsBlobUrl = function extractAsBlobUrl(filename, type) {
 
-		var blob = new Blob([this.files[filename]], { type: type });
-		var url = URL.createObjectURL(blob);
-		this._blobUrlPool.push(url);
-		return url;
+		var blob = new Blob([this.files[filename].data], { type: type });
+		this.files[filename].url = URL.createObjectURL(blob);
+		return this.files[filename].url;
 	};
 
 	ZipLoader.prototype.extractAsText = function extractAsText(filename) {
 
 		var str = '';
 
-		for (var i = 0, l = this.files[filename].length; i < l; i++) {
+		for (var i = 0, l = this.files[filename].data.length; i < l; i++) {
 
-			str += String.fromCharCode(this.files[filename][i]);
+			str += String.fromCharCode(this.files[filename].data[i]);
 		}
 
 		return str;
@@ -3423,7 +3415,7 @@ var ZipLoader = function () {
 		var texture = new THREE.Texture();
 		var type = /\.jpg$/.test(path) ? 'image/jpeg' : /\.png$/.test(path) ? 'image/png' : /\.gif$/.test(path) ? 'image/gif' : 'unknown';
 
-		var arraybuffer = this.files[path];
+		var arraybuffer = this.files[path].data;
 		var blob = new Blob([arraybuffer], { type: type });
 		texture.image = new Image();
 
@@ -3489,26 +3481,35 @@ var ZipLoader = function () {
 		}
 	};
 
-	ZipLoader.prototype.clear = function clear() {
+	ZipLoader.prototype.clear = function clear(filename) {
 
-		var pattern = '__ziploader_' + this._id + '__';
+		if (!!filename) {
 
-		THREE.Loader.Handlers.handlers.some(function (el, i) {
+			URL.revokeObjectURL(this.files[filename].url);
+			delete this.files[filename];
+			return;
+		}
 
-			if (el instanceof RegExp && el.source === pattern) {
+		for (var key in this.files) {
 
-				THREE.Loader.Handlers.handlers.splice(i, 2);
-				return true;
-			}
-		});
+			URL.revokeObjectURL(this.files[key].url);
+		}
 
-		this._blobUrlPool.forEach(function (url) {
-
-			URL.revokeObjectURL(url);
-		});
-
-		this._blobUrlPool.length = 0;
 		delete this.files;
+
+		if (!!THREE) {
+
+			var pattern = '__ziploader_' + this._id + '__';
+
+			THREE.Loader.Handlers.handlers.some(function (el, i) {
+
+				if (el instanceof RegExp && el.source === pattern) {
+
+					THREE.Loader.Handlers.handlers.splice(i, 2);
+					return true;
+				}
+			});
+		}
 	};
 
 	return ZipLoader;
