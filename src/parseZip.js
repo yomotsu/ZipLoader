@@ -18,7 +18,7 @@ const parseZip = ( buffer ) => {
 		if ( signature === LOCAL_FILE_HEADER ) {
 
 			const file = parseLocalFile( reader );
-			files[ file.name ] = file.data;
+			files[ file.name ] = { data: file.data };
 			continue;
 
 		}

@@ -92,7 +92,7 @@ loader.on( 'load', function ( e ) {
 	img1.onload = function () {
 
 		document.getElementById( 'placeholder-jpg' ).appendChild( img1 );
-		URL.revokeObjectURL( img1.src );
+		loader.clear( 'mixed/poster.jpg' );
 
 	}
 
@@ -107,7 +107,7 @@ loader.on( 'load', function ( e ) {
 	img2.onload = function () {
 
 		document.getElementById( 'placeholder-svg' ).appendChild( img2 );
-		URL.revokeObjectURL( img2.src );
+		loader.clear( 'mixed/blender.svg' );
 
 	}
 
@@ -119,12 +119,13 @@ loader.on( 'load', function ( e ) {
 	// ---------------------------------------------------------------------------
 	var audio = new Audio();
 
-	audio.oncanplaythrough = function () {
+	audio.addEventListener( 'canplaythrough', function () {
 
 		document.getElementById( 'placeholder-audio' ).appendChild( audio );
-		// URL.revokeObjectURL( audio.src );
+		loader.clear( 'mixed/sound.mp3' );
+		audio.removeEventListener( 'canplaythrough', arguments.callee );
 
-	};
+	} );
 
 	audio.src = loader.extractAsBlobUrl( 'mixed/sound.mp3', 'audio/mp3' );
 	audio.controls = true;
@@ -135,12 +136,13 @@ loader.on( 'load', function ( e ) {
 	// ---------------------------------------------------------------------------
 	var video = document.createElement( 'video' );
 
-	video.oncanplaythrough = function () {
+	video.addEventListener( 'canplaythrough', function () {
 
 		document.getElementById( 'placeholder-video' ).appendChild( video );
-		// URL.revokeObjectURL( video.src );
+		loader.clear( 'mixed/trailer.mp4' );
+		video.removeEventListener( 'canplaythrough', arguments.callee );
 
-	};
+	} );
 
 	video.src = loader.extractAsBlobUrl( 'mixed/trailer.mp4', 'video/mp4' );
 	video.controls = true;
@@ -151,6 +153,7 @@ loader.on( 'load', function ( e ) {
 	// ---------------------------------------------------------------------------
 	var text = loader.extractAsText( 'mixed/lisence.txt' );
 	document.getElementById( 'placeholder-text' ).innerText = text;
+	loader.clear( 'mixed/lisence.txt' );
 
 
 	// ---------------------------------------------------------------------------
@@ -158,6 +161,7 @@ loader.on( 'load', function ( e ) {
 	// ---------------------------------------------------------------------------
 	var json = JSON.stringify( loader.extractAsJSON( 'mixed/info.json' ) );
 	document.getElementById( 'placeholder-json' ).innerText = json;
+	loader.clear( 'mixed/info.json' );
 
 
 } );

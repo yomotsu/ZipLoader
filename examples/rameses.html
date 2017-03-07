@@ -72,7 +72,7 @@ loader.on( 'progress', function ( e ) {
 // on load
 loader.on( 'load', function ( e ) {
 
-	var drcBuffer  = loader.files[ 'rameses/rameses.drc' ];
+	var drcBuffer  = loader.files[ 'rameses/rameses.drc' ].data;
 	var textureUrl = loader.extractAsBlobUrl( 'rameses/rameses.jpg', 'image/jpeg' );
 	var hdriUrl    = loader.extractAsBlobUrl( 'rameses/hdri.jpg', 'image/jpeg' );
 
@@ -100,13 +100,10 @@ loader.on( 'load', function ( e ) {
 	const dracoLoader = new THREE.DRACOLoader();
 	const bufferGeometry = dracoLoader.decodeDracoFile( drcBuffer );
 
-	bufferGeometry.computeBoundingSphere();
-
 	var mesh = new THREE.Mesh( bufferGeometry, material );
-	mesh.position.sub( bufferGeometry.boundingSphere.center );
 	scene.add( mesh );
 
-	loader.clear();
+	loader.clear( 'rameses/rameses.drc' );
 
 } );
 

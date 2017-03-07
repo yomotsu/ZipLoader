@@ -38,7 +38,7 @@ loader.on( 'load', function ( e ) {
 		img.onload = function () {
 
 			document.body.appendChild( img );
-			URL.revokeObjectURL( url );
+			loader.clear( filename );
 
 		}
 

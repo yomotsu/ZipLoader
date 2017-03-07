@@ -8,7 +8,6 @@ const ZipLoader = class ZipLoader {
 
 		this._id = count;
 		this._listeners = {};
-		this._blobUrlPool = [];
 		this.url = url;
 		this.files = null;
 		count ++;
@@ -44,10 +43,9 @@ const ZipLoader = class ZipLoader {
 
 	extractAsBlobUrl ( filename, type ) {
 
-		const blob = new Blob( [ this.files[ filename ] ], { type: type } );
-		const url = URL.createObjectURL( blob );
-		this._blobUrlPool.push( url );
-		return url;
+		const blob = new Blob( [ this.files[ filename ].data ], { type: type } );
+		this.files[ filename ].url = URL.createObjectURL( blob );
+		return this.files[ filename ].url;
 
 	}
 
@@ -55,9 +53,9 @@ const ZipLoader = class ZipLoader {
 
 		let str = '';
 
-		for ( let i = 0, l = this.files[ filename ].length; i < l; i++ ) {
+		for ( let i = 0, l = this.files[ filename ].data.length; i < l; i++ ) {
 
-			str += String.fromCharCode( this.files[ filename ][ i ] );
+			str += String.fromCharCode( this.files[ filename ].data[ i ] );
 
 		};
 
@@ -105,7 +103,7 @@ const ZipLoader = class ZipLoader {
 		             ( /\.gif$/ ).test( path ) ? 'image/gif' :
 		             'unknown';
 
-		const arraybuffer = this.files[ path ];
+		const arraybuffer = this.files[ path ].data;
 		const blob = new Blob( [ arraybuffer ], { type: type } );
 		texture.image = new Image();
 
@@ -183,29 +181,40 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	clear () {
+	clear ( filename ) {
 
-		const pattern = `__ziploader_${ this._id }__`;
+		if ( !!filename ) {
 
-		THREE.Loader.Handlers.handlers.some( ( el, i ) => {
+			URL.revokeObjectURL( this.files[ filename ].url );
+			delete this.files[ filename ];
+			return;
 
-			if( el instanceof RegExp && el.source === pattern ) {
+		}
 
-				THREE.Loader.Handlers.handlers.splice( i, 2 );
-				return true;
+		for ( let key in this.files ) {
 
-			}
+			URL.revokeObjectURL( this.files[ key ].url );
 
-		} );
+		}
 
-		this._blobUrlPool.forEach( ( url ) => {
-
-			URL.revokeObjectURL( url );
-
-		} );
-
-		this._blobUrlPool.length = 0;
 		delete this.files;
+
+		if ( !!THREE ) {
+
+			const pattern = `__ziploader_${ this._id }__`;
+
+			THREE.Loader.Handlers.handlers.some( ( el, i ) => {
+
+				if( el instanceof RegExp && el.source === pattern ) {
+
+					THREE.Loader.Handlers.handlers.splice( i, 2 );
+					return true;
+
+				}
+
+			} );
+
+		}
 
 	}
 

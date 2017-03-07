@@ -86,7 +86,7 @@ var json = loader.extractAsJSON( 'foldername/data.json' );
 
 ### As an URL
 
-The 2nd augument is its MIMEType.
+The 2nd arguments is its MIMEType.
 
 ```javascript
 var url = loader.extractAsBlobUrl( 'foldername/pict.jpg', 'image/jpeg' );
@@ -116,4 +116,24 @@ loader.on( 'load', function ( e ) {
   scene.add( mesh );
 
 } );
+```
+
+
+## Clear cache
+
+After unzipped, loader instance will store the data.
+When you don't need the data, you can clear the stored cache.
+
+To clear single cache
+```javascript
+myImg.onload = function () {
+
+  loader.clear( 'foldername/pict.jpg' );
+
+}
+```
+
+To clear all cache (sort of its destructor)
+```javascript
+loader.clear();
 ```
