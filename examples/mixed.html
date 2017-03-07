@@ -73,10 +73,11 @@ button{
 <script src="../dist/ZipLoader.js"></script>
 <script>
 var loader = new ZipLoader( './mixed.zip' );
-
+var button = document.getElementById( 'button' );
 // on progress
 loader.on( 'progress', function ( e ) {
 
+	button.innerHTML = ( ( e.loaded / e.total * 100 ) | 0 ) + '%';
 	console.log( 'loading', e.loaded / e.total * 100 + '%' );
 
 } );
@@ -118,10 +119,10 @@ loader.on( 'load', function ( e ) {
 	// audio
 	// ---------------------------------------------------------------------------
 	var audio = new Audio();
+	document.getElementById( 'placeholder-audio' ).appendChild( audio );
 
 	audio.addEventListener( 'canplaythrough', function () {
 
-		document.getElementById( 'placeholder-audio' ).appendChild( audio );
 		loader.clear( 'mixed/sound.mp3' );
 		audio.removeEventListener( 'canplaythrough', arguments.callee );
 
@@ -135,10 +136,10 @@ loader.on( 'load', function ( e ) {
 	// video
 	// ---------------------------------------------------------------------------
 	var video = document.createElement( 'video' );
+	document.getElementById( 'placeholder-video' ).appendChild( video );
 
 	video.addEventListener( 'canplaythrough', function () {
 
-		document.getElementById( 'placeholder-video' ).appendChild( video );
 		loader.clear( 'mixed/trailer.mp4' );
 		video.removeEventListener( 'canplaythrough', arguments.callee );
 
@@ -167,7 +168,7 @@ loader.on( 'load', function ( e ) {
 } );
 
 // on button click
-document.getElementById( 'button' ).addEventListener( 'click', function ( e ) {
+button.addEventListener( 'click', function ( e ) {
 
 	loader.load();
 	e.target.disabled = true;
