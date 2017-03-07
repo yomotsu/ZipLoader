@@ -16,6 +16,7 @@ const ZipLoader = class ZipLoader {
 
 	load () {
 
+		const startTime = Date.now();
 		const xhr = new XMLHttpRequest();
 		xhr.open( 'GET', this.url, true );
 		xhr.responseType = 'arraybuffer';
@@ -25,7 +26,8 @@ const ZipLoader = class ZipLoader {
 			this.dispatch( {
 				type: 'progress',
 				loaded: e.loaded,
-				total: e.total
+				total: e.total,
+				elapsedTime: Date.now() - startTime
 			} );
 
 		};
@@ -33,7 +35,10 @@ const ZipLoader = class ZipLoader {
 		xhr.onload = ( e ) => {
 
 			this.files = parseZip( xhr.response );
-			this.dispatch( { type: 'load' } );
+			this.dispatch( {
+				type: 'load',
+				elapsedTime: Date.now() - startTime
+			} );
 
 		};
 

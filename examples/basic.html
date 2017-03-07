@@ -18,13 +18,18 @@ var loader = new ZipLoader( './basic.zip' );
 
 loader.on( 'progress', function ( e ) {
 
-	console.log( 'loading', e.loaded, e.total );
+	console.log(
+		'loading',
+		'loaded:' + e.loaded,
+		'total:' + e.total,
+		'time:' + e.elapsedTime + 'ms'
+	);
 
 } );
 
 loader.on( 'load', function ( e ) {
 
-	console.log( 'loaded!' );
+	console.log( 'loaded!', 'time:' + e.elapsedTime + 'ms' );
 	console.log( loader.files );
 	console.log( loader.extractAsJSON( 'basic/data.json' ) );
 

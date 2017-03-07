@@ -23,7 +23,11 @@ var loader = new ZipLoader( './496_RPG_icons.zip' );
 // on progress
 loader.on( 'progress', function ( e ) {
 
-	console.log( 'loading', e.loaded / e.total * 100 + '%' );
+	console.log(
+		'loading',
+		e.loaded / e.total * 100 + '%',
+		'time:' + e.elapsedTime + 'ms'
+	);
 
 } );
 
