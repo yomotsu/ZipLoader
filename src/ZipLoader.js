@@ -48,6 +48,12 @@ const ZipLoader = class ZipLoader {
 
 	extractAsBlobUrl ( filename, type ) {
 
+		if ( this.files[ filename ].url ) {
+
+			return this.files[ filename ].url;
+
+		}
+
 		const blob = new Blob( [ this.files[ filename ].data ], { type: type } );
 		this.files[ filename ].url = URL.createObjectURL( blob );
 		return this.files[ filename ].url;
