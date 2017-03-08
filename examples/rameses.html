@@ -74,7 +74,7 @@ loader.on( 'progress', function ( e ) {
 // on load
 loader.on( 'load', function ( e ) {
 
-	var drcBuffer  = loader.files[ 'rameses/rameses.drc' ].data;
+	var drcBuffer  = loader.files[ 'rameses/rameses.drc' ].buffer;
 	var textureUrl = loader.extractAsBlobUrl( 'rameses/rameses.jpg', 'image/jpeg' );
 	var hdriUrl    = loader.extractAsBlobUrl( 'rameses/hdri.jpg', 'image/jpeg' );
 
