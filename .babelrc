@@ -1,14 +1,14 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [
-          "last 2 versions",
-          "ie >= 11"
-        ]
-      },
-      "loose": true,
-      "modules": false
-    }]
-  ]
+	"presets": [
+		[ "env", {
+			"targets": {
+				"browsers": [
+					"last 2 versions",
+					"ie >= 10"
+				]
+			},
+			"loose": true,
+			"modules": false
+		} ]
+	]
 }
