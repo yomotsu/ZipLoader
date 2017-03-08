@@ -82,6 +82,9 @@ const ZipLoader = class ZipLoader {
 
 	loadThreeJson ( filename ) {
 
+		const json = this.extractAsJSON( filename );
+		const dirName = filename.replace( /\/.+\.json$/, '/' );
+
 		const pattern = `__ziploader_${ this._id }__`;
 		const regex   = new RegExp( pattern );
 
@@ -100,31 +103,31 @@ const ZipLoader = class ZipLoader {
 
 		}
 
-		const json = this.extractAsJSON( filename );
-		const dirName = filename.replace( /\/.+\.json$/, '/' );
 		return THREE.JSONLoader.prototype.parse( json, pattern + dirName );
 
 	}
 
-	loadThreeTexture ( path ) {
+	loadThreeTexture ( filename ) {
 
 		const texture = new THREE.Texture();
-		const type = ( /\.jpg$/ ).test( path ) ? 'image/jpeg' :
-		             ( /\.png$/ ).test( path ) ? 'image/png' :
-		             ( /\.gif$/ ).test( path ) ? 'image/gif' :
-		             'unknown';
+		const type = ( /\.jpg$/ ).test( filename ) ? 'image/jpeg' :
+		             ( /\.png$/ ).test( filename ) ? 'image/png' :
+		             ( /\.gif$/ ).test( filename ) ? 'image/gif' :
+		             undefined;
 
-		const arraybuffer = this.files[ path ].buffer;
-		const blob = new Blob( [ arraybuffer ], { type: type } );
-		texture.image = new Image();
+		const buffer = this.files[ filename ].buffer;
+		const blob = new Blob( [ buffer ], { type: type } );
 
-		texture.image.onload = () => {
+		const onload = () => {
 
 			texture.needsUpdate = true;
+			texture.image.removeEventListener( 'load', onload );
 			URL.revokeObjectURL( texture.image.src );
 
 		}
 
+		texture.image = new Image();
+		texture.image.addEventListener( 'load', onload );
 		texture.image.src = URL.createObjectURL( blob );
 		return texture;
 
