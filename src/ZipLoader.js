@@ -70,7 +70,7 @@ const ZipLoader = class ZipLoader {
 
 		};
 
-		return str;
+		return decodeURIComponent( escape( str ) );
 
 	}
 
