@@ -54,7 +54,7 @@ const ZipLoader = class ZipLoader {
 
 		}
 
-		const blob = new Blob( [ this.files[ filename ].data ], { type: type } );
+		const blob = new Blob( [ this.files[ filename ].buffer ], { type: type } );
 		this.files[ filename ].url = URL.createObjectURL( blob );
 		return this.files[ filename ].url;
 
@@ -64,9 +64,9 @@ const ZipLoader = class ZipLoader {
 
 		let str = '';
 
-		for ( let i = 0, l = this.files[ filename ].data.length; i < l; i++ ) {
+		for ( let i = 0, l = this.files[ filename ].buffer.length; i < l; i++ ) {
 
-			str += String.fromCharCode( this.files[ filename ].data[ i ] );
+			str += String.fromCharCode( this.files[ filename ].buffer[ i ] );
 
 		};
 
@@ -114,7 +114,7 @@ const ZipLoader = class ZipLoader {
 		             ( /\.gif$/ ).test( path ) ? 'image/gif' :
 		             'unknown';
 
-		const arraybuffer = this.files[ path ].data;
+		const arraybuffer = this.files[ path ].buffer;
 		const blob = new Blob( [ arraybuffer ], { type: type } );
 		texture.image = new Image();
 

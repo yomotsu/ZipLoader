@@ -18,7 +18,7 @@ const parseZip = ( buffer ) => {
 		if ( signature === LOCAL_FILE_HEADER ) {
 
 			const file = parseLocalFile( reader );
-			files[ file.name ] = { data: file.data };
+			files[ file.name ] = { buffer: file.buffer };
 			continue;
 
 		}
@@ -112,7 +112,7 @@ const parseLocalFile = ( reader ) => {
 
 	return {
 		name: filename.join( '' ),
-		data: data
+		buffer: data
 	};
 
 }

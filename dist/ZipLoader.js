@@ -121,6 +121,10 @@
 	exports.setTyped(TYPED_OK);
 	});
 
+	// Note: adler32 takes 12% for level 0 and 2% for level 6.
+	// It doesn't worth to make additional optimizationa as in original.
+	// Small size is preferable.
+
 	function adler32$1(adler, buf, len, pos) {
 	  var s1 = (adler & 0xffff) |0,
 	      s2 = ((adler >>> 16) & 0xffff) |0,
@@ -148,6 +152,12 @@
 
 	var adler32_1 = adler32$1;
 
+	// Note: we can't get significant speed boost here.
+	// So write code to minimize size - no pregenerated tables
+	// and array tools dependencies.
+
+
+	// Use ordinary array, since untyped makes no boost here
 	function makeTable() {
 	  var c, table = [];
 
@@ -182,6 +192,7 @@
 
 	var crc32_1 = crc32$1;
 
+	// See state defs from inflate.js
 	var BAD$1 = 30;       /* got a data error -- remain here until reset */
 	var TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
 
@@ -3162,7 +3173,7 @@
 			if (signature === LOCAL_FILE_HEADER) {
 
 				var file = parseLocalFile(reader);
-				files[file.name] = { data: file.data };
+				files[file.name] = { buffer: file.buffer };
 				continue;
 			}
 
@@ -3250,7 +3261,7 @@
 
 		return {
 			name: filename.join(''),
-			data: data
+			buffer: data
 		};
 	};
 
@@ -3373,7 +3384,12 @@
 
 		ZipLoader.prototype.extractAsBlobUrl = function extractAsBlobUrl(filename, type) {
 
-			var blob = new Blob([this.files[filename].data], { type: type });
+			if (this.files[filename].url) {
+
+				return this.files[filename].url;
+			}
+
+			var blob = new Blob([this.files[filename].buffer], { type: type });
 			this.files[filename].url = URL.createObjectURL(blob);
 			return this.files[filename].url;
 		};
@@ -3382,9 +3398,9 @@
 
 			var str = '';
 
-			for (var i = 0, l = this.files[filename].data.length; i < l; i++) {
+			for (var i = 0, l = this.files[filename].buffer.length; i < l; i++) {
 
-				str += String.fromCharCode(this.files[filename].data[i]);
+				str += String.fromCharCode(this.files[filename].buffer[i]);
 			}
 
 			return str;
@@ -3421,7 +3437,7 @@
 			var texture = new THREE.Texture();
 			var type = /\.jpg$/.test(path) ? 'image/jpeg' : /\.png$/.test(path) ? 'image/png' : /\.gif$/.test(path) ? 'image/gif' : 'unknown';
 
-			var arraybuffer = this.files[path].data;
+			var arraybuffer = this.files[path].buffer;
 			var blob = new Blob([arraybuffer], { type: type });
 			texture.image = new Image();
 
