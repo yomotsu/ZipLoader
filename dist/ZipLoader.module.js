@@ -3397,7 +3397,7 @@ var ZipLoader = function () {
 			str += String.fromCharCode(this.files[filename].buffer[i]);
 		}
 
-		return str;
+		return decodeURIComponent(escape(str));
 	};
 
 	ZipLoader.prototype.extractAsJSON = function extractAsJSON(filename) {
@@ -3407,6 +3407,9 @@ var ZipLoader = function () {
 
 	ZipLoader.prototype.loadThreeJson = function loadThreeJson(filename) {
 		var _this2 = this;
+
+		var json = this.extractAsJSON(filename);
+		var dirName = filename.replace(/\/.+\.json$/, '/');
 
 		var pattern = '__ziploader_' + this._id + '__';
 		var regex = new RegExp(pattern);
@@ -3421,26 +3424,26 @@ var ZipLoader = function () {
 			});
 		}
 
-		var json = this.extractAsJSON(filename);
-		var dirName = filename.replace(/\/.+\.json$/, '/');
 		return THREE.JSONLoader.prototype.parse(json, pattern + dirName);
 	};
 
-	ZipLoader.prototype.loadThreeTexture = function loadThreeTexture(path) {
+	ZipLoader.prototype.loadThreeTexture = function loadThreeTexture(filename) {
 
 		var texture = new THREE.Texture();
-		var type = /\.jpg$/.test(path) ? 'image/jpeg' : /\.png$/.test(path) ? 'image/png' : /\.gif$/.test(path) ? 'image/gif' : 'unknown';
+		var type = /\.jpg$/.test(filename) ? 'image/jpeg' : /\.png$/.test(filename) ? 'image/png' : /\.gif$/.test(filename) ? 'image/gif' : undefined;
 
-		var arraybuffer = this.files[path].buffer;
-		var blob = new Blob([arraybuffer], { type: type });
-		texture.image = new Image();
+		var buffer = this.files[filename].buffer;
+		var blob = new Blob([buffer], { type: type });
 
-		texture.image.onload = function () {
+		var onload = function onload() {
 
 			texture.needsUpdate = true;
+			texture.image.removeEventListener('load', onload);
 			URL.revokeObjectURL(texture.image.src);
 		};
 
+		texture.image = new Image();
+		texture.image.addEventListener('load', onload);
 		texture.image.src = URL.createObjectURL(blob);
 		return texture;
 	};
