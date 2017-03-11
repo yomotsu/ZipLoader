@@ -1,24 +1,29 @@
 # ZipLoader
 
+[![Latest NPM release](https://img.shields.io/npm/v/zip-loader.svg)](https://www.npmjs.com/package/zip-loader)
+![MIT License](https://img.shields.io/npm/l/zip-loader.svg)
+
 ZipLoader is a light weight zip file loader and unzipper for Web browsers.
 (only 25KB (gzipped 9KB) )
+
+Plus, It makes easy to make loading progress bar.
 
 [Demos can be seen here](https://yomotsu.github.io/ZipLoader/examples/).
 
 ## Usage
 
-Both standalone version and NPM module version are available.
+Both standalone version and [NPM module](https://www.npmjs.com/package/zip-loader) version are available.
 
-### Standadone
+### Standalone
 
-Copy ZipLoader.js from /dist/ZipLoader.js and place it in your project.
+Copy ZipLoader.js from `/dist/ZipLoader.js` and place it in your project.
 ```html
 <script src="./js/ZipLoader.js"></script>
 ```
 
 ### NPM
 ```
-$ npm i -save zip-loader
+$ npm install --save zip-loader
 ```
 
 then
@@ -122,7 +127,7 @@ loader.on( 'load', function ( e ) {
 ## Clear cache
 
 After unzipped, loader instance will store the data.
-When you don't need the data, you can clear the stored cache.
+When you don't need the data, you can clear stored cache.
 
 To clear single cache
 ```javascript

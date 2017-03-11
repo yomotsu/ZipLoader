@@ -84,7 +84,6 @@ const ZipLoader = class ZipLoader {
 
 		const json = this.extractAsJSON( filename );
 		const dirName = filename.replace( /\/.+\.json$/, '/' );
-
 		const pattern = `__ziploader_${ this._id }__`;
 		const regex   = new RegExp( pattern );
 
@@ -114,9 +113,7 @@ const ZipLoader = class ZipLoader {
 		             ( /\.png$/ ).test( filename ) ? 'image/png' :
 		             ( /\.gif$/ ).test( filename ) ? 'image/gif' :
 		             undefined;
-
-		const buffer = this.files[ filename ].buffer;
-		const blob = new Blob( [ buffer ], { type: type } );
+		const blob = new Blob( [ this.files[ filename ].buffer ], { type: type } );
 
 		const onload = () => {
 
@@ -174,20 +171,11 @@ const ZipLoader = class ZipLoader {
 		if ( !!listenerArray ) {
 
 			event.target = this;
-
-			let i = 0;
-			const array = [];
 			const length = listenerArray.length;
 
-			for ( i = 0; i < length; i ++ ) {
+			for ( let i = 0; i < length; i ++ ) {
 
-				array[ i ] = listenerArray[ i ];
-
-			}
-
-			for ( i = 0; i < length; i ++ ) {
-
-				array[ i ].call( this, event );
+				listenerArray[ i ].call( this, event );
 
 			}
 

@@ -1,4 +1,3 @@
-// https://nodeca.github.io/pako/#Inflate
 import pako from 'pako/lib/inflate.js';
 import DataReader from './DataReader.js';
 
@@ -143,7 +142,7 @@ const parseLocalFile = ( reader ) => {
 // |        | (c)bytes | File comment                               |
 const parseCentralDirectory = ( reader ) => {
 
-	let i = 0;
+	// let i = 0;
 	reader.skip( 24 );
 	// const versionMadeby        = reader.readBytes( 2 );
 	// const versionNeedToExtract = reader.readBytes( 2 );
