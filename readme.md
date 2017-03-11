@@ -1,7 +1,7 @@
 # ZipLoader
 
 [![Latest NPM release](https://img.shields.io/npm/v/zip-loader.svg)](https://www.npmjs.com/package/zip-loader)
-![MIT License][https://img.shields.io/npm/l/zip-loader.svg]
+![MIT License](https://img.shields.io/npm/l/zip-loader.svg)
 
 ZipLoader is a light weight zip file loader and unzipper for Web browsers.
 (only 25KB (gzipped 9KB) )
