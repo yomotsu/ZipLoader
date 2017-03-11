@@ -3150,7 +3150,6 @@ var _class = function () {
 	return _class;
 }();
 
-// https://nodeca.github.io/pako/#Inflate
 var LOCAL_FILE_HEADER = 0x04034b50;
 var CENTRAL_DIRECTORY = 0x02014b50;
 // const END_OF_CENTRAL_DIRECTORY = 0x06054b50;
@@ -3285,7 +3284,7 @@ var parseLocalFile = function parseLocalFile(reader) {
 // |        | (c)bytes | File comment                               |
 var parseCentralDirectory = function parseCentralDirectory(reader) {
 
-	var i = 0;
+	// let i = 0;
 	reader.skip(24);
 	// const versionMadeby        = reader.readBytes( 2 );
 	// const versionNeedToExtract = reader.readBytes( 2 );
@@ -3410,7 +3409,6 @@ var ZipLoader = function () {
 
 		var json = this.extractAsJSON(filename);
 		var dirName = filename.replace(/\/.+\.json$/, '/');
-
 		var pattern = '__ziploader_' + this._id + '__';
 		var regex = new RegExp(pattern);
 
@@ -3431,9 +3429,7 @@ var ZipLoader = function () {
 
 		var texture = new THREE.Texture();
 		var type = /\.jpg$/.test(filename) ? 'image/jpeg' : /\.png$/.test(filename) ? 'image/png' : /\.gif$/.test(filename) ? 'image/gif' : undefined;
-
-		var buffer = this.files[filename].buffer;
-		var blob = new Blob([buffer], { type: type });
+		var blob = new Blob([this.files[filename].buffer], { type: type });
 
 		var onload = function onload() {
 
@@ -3483,19 +3479,11 @@ var ZipLoader = function () {
 		if (!!listenerArray) {
 
 			event.target = this;
-
-			var i = 0;
-			var array = [];
 			var length = listenerArray.length;
 
-			for (i = 0; i < length; i++) {
+			for (var i = 0; i < length; i++) {
 
-				array[i] = listenerArray[i];
-			}
-
-			for (i = 0; i < length; i++) {
-
-				array[i].call(this, event);
+				listenerArray[i].call(this, event);
 			}
 		}
 	};
