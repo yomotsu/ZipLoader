@@ -1,12 +1,14 @@
 # ZipLoader
 
-[![Latest NPM release](https://img.shields.io/npm/v/zip-loader.svg)](https://www.npmjs.com/package/zip-loader)
-![MIT License](https://img.shields.io/npm/l/zip-loader.svg)
-
 ZipLoader is a light weight zip file loader and unzipper for Web browsers.
 (only 25KB (gzipped 9KB) )
 
 Plus, It makes easy to make loading progress bar.
+
+[![Latest NPM release](https://img.shields.io/npm/v/zip-loader.svg)](https://www.npmjs.com/package/zip-loader)
+![MIT License](https://img.shields.io/npm/l/zip-loader.svg)
+[![dependencies Status](https://david-dm.org/yomotsu/ZipLoader/status.svg)](https://david-dm.org/yomotsu/ZipLoader)
+[![dependencies Status](https://david-dm.org/yomotsu/ZipLoader/status.svg)](https://david-dm.org/yomotsu/ZipLoader)
 
 [Demos can be seen here](https://yomotsu.github.io/ZipLoader/examples/).
 
@@ -44,7 +46,7 @@ You can get loading progress in `'progress'` event while loading.
 
 When it's done, the zip file is automatically unzipped and `'load'` event will be triggered.
 
-As the result, you will get `files` property under the instance, that consists of filename and binary data.
+As the result, you will get `files` property under the instance, that consists of filename and binary buffer.
 
 ```javascript
 var loader = new ZipLoader( './foldername.zip' );
