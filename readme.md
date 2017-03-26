@@ -8,7 +8,7 @@ Plus, It makes easy to make loading progress bar.
 [![Latest NPM release](https://img.shields.io/npm/v/zip-loader.svg)](https://www.npmjs.com/package/zip-loader)
 ![MIT License](https://img.shields.io/npm/l/zip-loader.svg)
 [![dependencies Status](https://david-dm.org/yomotsu/ZipLoader/status.svg)](https://david-dm.org/yomotsu/ZipLoader)
-[![dependencies Status](https://david-dm.org/yomotsu/ZipLoader/status.svg)](https://david-dm.org/yomotsu/ZipLoader)
+[![devDependencies Status](https://david-dm.org/yomotsu/ZipLoader/dev-status.svg)](https://david-dm.org/yomotsu/ZipLoader?type=dev)
 
 [Demos can be seen here](https://yomotsu.github.io/ZipLoader/examples/).
 
