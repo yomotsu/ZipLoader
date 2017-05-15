@@ -24,9 +24,5 @@
     "watch": "rollup --config --watch",
     "build": "rollup --config",
     "release": "rollup -c && uglifyjs dist/ZipLoader.js -cm --preamble \"/*!\n * ZipLoader\n * (c) 2017 @yomotsu\n * Released under the MIT License.\n */\" > dist/ZipLoader.min.js"
-  },
-  "engines": {
-    "node": "6.9.4",
-    "npm": "3.10.10"
   }
 }
