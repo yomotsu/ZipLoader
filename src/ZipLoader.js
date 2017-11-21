@@ -92,6 +92,13 @@ const ZipLoader = class ZipLoader {
 
 	loadThreeJson ( filename ) {
 
+		console.log( 'loadThreeJson() has been changed. use loadThreeJSON()' );
+		this.loadThreeJSON( filename );
+
+	}
+
+	loadThreeJSON ( filename ) {
+
 		const json = this.extractAsJSON( filename );
 		const dirName = filename.replace( /\/.+\.json$/, '/' );
 		const pattern = `__ziploader_${ this._id }__`;
