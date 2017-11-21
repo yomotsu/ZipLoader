@@ -64,6 +64,16 @@ const ZipLoader = class ZipLoader {
 
 		let str = '';
 
+		// Should I use FileReader? but it would be async
+		// const reader = new FileReader();
+		// const blob = new Blob(
+		// 	[ this.files[ filename ].buffer ],
+		// 	{ type: 'text/plain' }
+		// );
+		//
+		// reader.onload = () => { console.log( reader.result ) }
+		// reader.readAsText( blob );
+
 		for ( let i = 0, l = this.files[ filename ].buffer.length; i < l; i++ ) {
 
 			str += String.fromCharCode( this.files[ filename ].buffer[ i ] );
