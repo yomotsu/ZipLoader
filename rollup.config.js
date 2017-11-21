@@ -12,7 +12,20 @@ const license = `/*!
  */`
 
 export default {
-	entry: 'src/ZipLoader.js',
+	input: 'src/ZipLoader.js',
+	output: [
+		{
+			format: 'umd',
+			name: 'ZipLoader',
+			file: 'dist/ZipLoader.js',
+			banner: license
+		},
+		{
+			format: 'es',
+			file: 'dist/ZipLoader.module.js',
+			banner: license
+		}
+	],
 	indent: '\t',
 	sourceMap: false,
 	plugins: [
@@ -41,18 +54,5 @@ export default {
 				} ]
 			]
 		} )
-	],
-	targets: [
-		{
-			format: 'umd',
-			moduleName: 'ZipLoader',
-			dest: 'dist/ZipLoader.js',
-			banner: license
-		},
-		{
-			format: 'es',
-			dest: 'dist/ZipLoader.module.js',
-			banner: license
-		}
 	]
 };

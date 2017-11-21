@@ -8,19 +8,20 @@
   "jsnext:main": "dist/ZipLoader.module.js",
   "module": "dist/ZipLoader.module.js",
   "dependencies": {
-    "pako": "^1.0.4"
+    "pako": "^1.0.6"
   },
   "devDependencies": {
-    "babel-preset-env": "1.1.10",
-    "rollup": "^0.41.4",
-    "rollup-plugin-babel": "2.7.1",
-    "rollup-plugin-commonjs": "7.0.0",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-watch": "^3.2.2",
-    "uglify-js": "^2.6.0"
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "1.6.1",
+    "rollup": "^0.51.8",
+    "rollup-plugin-babel": "3.0.2",
+    "rollup-plugin-commonjs": "8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-watch": "^4.3.1",
+    "uglify-js": "^3.1.10"
   },
   "scripts": {
-    "start": "npm run watch",
+    "dev": "npm run watch",
     "watch": "rollup --config --watch",
     "build": "rollup --config",
     "release": "rollup -c && uglifyjs dist/ZipLoader.js -cm --preamble \"/*!\n * ZipLoader\n * (c) 2017 @yomotsu\n * Released under the MIT License.\n */\" > dist/ZipLoader.min.js"
