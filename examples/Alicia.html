@@ -96,7 +96,7 @@ loader.on( 'load', function ( e ) {
 
 	var mesh = new THREE.SkinnedMesh(
 		result.geometry,
-		new THREE.MultiMaterial( result.materials )
+		result.materials
 	);
 	mesh.position.z = -0.2;
 
