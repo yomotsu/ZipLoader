@@ -82,10 +82,10 @@ loader.on( 'progress', function ( e ) {
 // loader on load
 loader.on( 'load', function ( e ) {
 
-	// use loadThreeJson method to get geometry and materials
+	// use loadThreeJSON method to get geometry and materials
 	// just like THREE.JSONLoader
 	// You will get `result.geometry` and `result.materials`
-	var result = loader.loadThreeJson( 'Alicia/Alicia.json' );
+	var result = loader.loadThreeJSON( 'Alicia/Alicia.json' );
 
 	result.materials.forEach( function ( material ) {
 
