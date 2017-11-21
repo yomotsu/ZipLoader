@@ -113,7 +113,7 @@ var loader = new ZipLoader( './assets.zip' );
 
 loader.on( 'load', function ( e ) {
 
-  var result = loader.loadThreeJson( 'assets/threejs-model.json' );
+  var result = loader.loadThreeJSON( 'assets/threejs-model.json' );
 
   var mesh = new THREE.Mesh(
     result.geometry,
