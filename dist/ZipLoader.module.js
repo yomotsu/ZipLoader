@@ -3704,11 +3704,17 @@ var ZipLoader = function () {
 	return ZipLoader;
 }();
 
-ZipLoader.use = function (option) {
+ZipLoader.install = function (option) {
 
 	if (!!option.THREE) {
 		THREE = option.THREE;
 	}
+};
+
+ZipLoader.use = function (option) {
+
+	console.log('ZipLoader.use has been renamed. use ZipLoader.install()');
+	ZipLoader.install(option);
 };
 
 export default ZipLoader;
