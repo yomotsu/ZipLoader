@@ -66,7 +66,7 @@ scene.add(
 
 
 // Prepare to use THREE.js in ZipLoader
-ZipLoader.use( { 'THREE': THREE } );
+ZipLoader.install( { 'THREE': THREE } );
 var loader = new ZipLoader( './Alicia.zip' );
 var button = document.getElementById( 'button' );
 

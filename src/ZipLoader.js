@@ -239,9 +239,17 @@ const ZipLoader = class ZipLoader {
 
 }
 
-ZipLoader.use = ( option ) => {
+ZipLoader.install = ( option ) => {
 
 	if ( !!option.THREE ) { THREE = option.THREE; }
+
+}
+
+ZipLoader.use = ( option ) => {
+
+	console.log( 'ZipLoader.use has been renamed. use ZipLoader.install()' );
+	ZipLoader.install( option );
+
 
 }
 

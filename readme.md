@@ -107,7 +107,7 @@ ZipLoader can provide altanative JSONLoader for zipped JSON.
 
 ```javascript
 // At first, prepare to use THREE.js in ZipLoader
-ZipLoader.use( { 'THREE': THREE } );
+ZipLoader.install( { THREE: THREE } );
 
 var loader = new ZipLoader( './assets.zip' );
 
