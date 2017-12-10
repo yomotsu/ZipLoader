@@ -25,7 +25,7 @@ const parseZip = ( buffer ) => {
 		if ( signature === CENTRAL_DIRECTORY ) {
 
 			parseCentralDirectory( reader );
-			continue
+			continue;
 
 		}
 
@@ -35,7 +35,7 @@ const parseZip = ( buffer ) => {
 
 	return files;
 
-}
+};
 
 // # Local file header
 // 
@@ -102,7 +102,7 @@ const parseLocalFile = ( reader ) => {
 			break;
 		case 8:
 			data = new Uint8Array( pako.inflate( compressedData, { raw: true } ) );
-			break; 
+			break;
 		default:
 			console.log( `${ filename.join( '' ) }: unsupported compression type` );
 			data = compressedData;
@@ -114,7 +114,7 @@ const parseLocalFile = ( reader ) => {
 		buffer: data
 	};
 
-}
+};
 
 // # Central directory
 //
@@ -186,6 +186,6 @@ const parseCentralDirectory = ( reader ) => {
 
 	// }
 
-}
+};
 
-export default parseZip
+export default parseZip;

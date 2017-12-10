@@ -4,7 +4,7 @@ let THREE;
 
 const ZipLoader = class ZipLoader {
 
-	constructor ( url ) {
+	constructor( url ) {
 
 		this._id = count;
 		this._listeners = {};
@@ -14,7 +14,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	load () {
+	load() {
 
 		const startTime = Date.now();
 		const xhr = new XMLHttpRequest();
@@ -32,7 +32,7 @@ const ZipLoader = class ZipLoader {
 
 		};
 
-		xhr.onload = ( e ) => {
+		xhr.onload = () => {
 
 			this.files = parseZip( xhr.response );
 			this.dispatch( {
@@ -46,7 +46,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	extractAsBlobUrl ( filename, type ) {
+	extractAsBlobUrl( filename, type ) {
 
 		if ( this.files[ filename ].url ) {
 
@@ -60,7 +60,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	extractAsText ( filename ) {
+	extractAsText( filename ) {
 
 		let str = '';
 
@@ -74,37 +74,37 @@ const ZipLoader = class ZipLoader {
 		// reader.onload = () => { console.log( reader.result ) }
 		// reader.readAsText( blob );
 
-		for ( let i = 0, l = this.files[ filename ].buffer.length; i < l; i++ ) {
+		for ( let i = 0, l = this.files[ filename ].buffer.length; i < l; i ++ ) {
 
 			str += String.fromCharCode( this.files[ filename ].buffer[ i ] );
 
-		};
+		}
 
 		return decodeURIComponent( escape( str ) );
 
 	}
 
-	extractAsJSON ( filename ) {
+	extractAsJSON( filename ) {
 
 		return JSON.parse( this.extractAsText( filename ) );
 
 	}
 
-	loadThreeJson ( filename ) {
+	loadThreeJson( filename ) {
 
 		console.log( 'loadThreeJson() has been changed. use loadThreeJSON()' );
 		this.loadThreeJSON( filename );
 
 	}
 
-	loadThreeJSON ( filename ) {
+	loadThreeJSON( filename ) {
 
 		const json = this.extractAsJSON( filename );
 		const dirName = filename.replace( /\/.+\.json$/, '/' );
 		const pattern = `__ziploader_${ this._id }__`;
 		const regex   = new RegExp( pattern );
 
-		if ( !THREE.Loader.Handlers.handlers.indexOf( regex ) !== -1 ) {
+		if ( ! THREE.Loader.Handlers.handlers.indexOf( regex ) !== - 1 ) {
 
 			THREE.Loader.Handlers.add(
 				regex,
@@ -123,7 +123,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	loadThreeTexture ( filename ) {
+	loadThreeTexture( filename ) {
 
 		const texture = new THREE.Texture();
 		const type = ( /\.jpg$/ ).test( filename ) ? 'image/jpeg' :
@@ -138,7 +138,7 @@ const ZipLoader = class ZipLoader {
 			texture.image.removeEventListener( 'load', onload );
 			URL.revokeObjectURL( texture.image.src );
 
-		}
+		};
 
 		texture.image = new Image();
 		texture.image.addEventListener( 'load', onload );
@@ -147,9 +147,9 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	on ( type, listener ) {
+	on( type, listener ) {
 
-		if ( !this._listeners[ type ] ) {
+		if ( ! this._listeners[ type ] ) {
 
 			this._listeners[ type ] = [];
 
@@ -163,11 +163,11 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	off ( type, listener ) {
+	off( type, listener ) {
 
 		const listenerArray = this._listeners[ type ];
 
-		if ( !!listenerArray ) {
+		if ( !! listenerArray ) {
 
 			const index = listenerArray.indexOf( listener );
 
@@ -181,11 +181,11 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	dispatch ( event ) {
+	dispatch( event ) {
 
 		const listenerArray = this._listeners[ event.type ];
 
-		if ( !!listenerArray ) {
+		if ( !! listenerArray ) {
 
 			event.target = this;
 			const length = listenerArray.length;
@@ -200,9 +200,9 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	clear ( filename ) {
+	clear( filename ) {
 
-		if ( !!filename ) {
+		if ( !! filename ) {
 
 			URL.revokeObjectURL( this.files[ filename ].url );
 			delete this.files[ filename ];
@@ -218,13 +218,13 @@ const ZipLoader = class ZipLoader {
 
 		delete this.files;
 
-		if ( !!THREE ) {
+		if ( !! THREE ) {
 
 			const pattern = `__ziploader_${ this._id }__`;
 
 			THREE.Loader.Handlers.handlers.some( ( el, i ) => {
 
-				if( el instanceof RegExp && el.source === pattern ) {
+				if ( el instanceof RegExp && el.source === pattern ) {
 
 					THREE.Loader.Handlers.handlers.splice( i, 2 );
 					return true;
@@ -237,20 +237,24 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-}
+};
 
 ZipLoader.install = ( option ) => {
 
-	if ( !!option.THREE ) { THREE = option.THREE; }
+	if ( !! option.THREE ) {
 
-}
+		THREE = option.THREE;
+
+	}
+
+};
 
 ZipLoader.use = ( option ) => {
 
-	console.log( 'ZipLoader.use has been renamed. use ZipLoader.install()' );
+	console.warn( 'ZipLoader.use has been renamed. use ZipLoader.install()' );
 	ZipLoader.install( option );
 
 
-}
+};
 
 export default ZipLoader;
