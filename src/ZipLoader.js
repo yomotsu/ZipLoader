@@ -88,13 +88,6 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	loadThreeJson( filename ) {
-
-		console.log( 'loadThreeJson() has been changed. use loadThreeJSON()' );
-		this.loadThreeJSON( filename );
-
-	}
-
 	loadThreeJSON( filename ) {
 
 		const json = this.extractAsJSON( filename );
@@ -244,14 +237,6 @@ ZipLoader.install = ( option ) => {
 		THREE = option.THREE;
 
 	}
-
-};
-
-ZipLoader.use = ( option ) => {
-
-	console.warn( 'ZipLoader.use has been renamed. use ZipLoader.install()' );
-	ZipLoader.install( option );
-
 
 };
 
