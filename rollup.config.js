@@ -18,15 +18,16 @@ export default {
 			format: 'umd',
 			name: 'ZipLoader',
 			file: 'dist/ZipLoader.js',
-			banner: license
+			banner: license,
+			indent: '\t',
 		},
 		{
 			format: 'es',
 			file: 'dist/ZipLoader.module.js',
-			banner: license
-		}
+			banner: license,
+			indent: '\t',
+		},
 	],
-	indent: '\t',
 	sourceMap: false,
 	plugins: [
 		nodeResolve( {
