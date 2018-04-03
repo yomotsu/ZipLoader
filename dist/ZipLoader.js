@@ -17,6 +17,8 @@
 	}
 
 	var common = createCommonjsModule(function (module, exports) {
+
+
 	var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
 	                (typeof Uint16Array !== 'undefined') &&
 	                (typeof Int32Array !== 'undefined');
@@ -120,7 +122,6 @@
 
 	exports.setTyped(TYPED_OK);
 	});
-
 	var common_1 = common.assign;
 	var common_2 = common.shrinkBuf;
 	var common_3 = common.setTyped;
@@ -256,8 +257,8 @@
 	// 3. This notice may not be removed or altered from any source distribution.
 
 	// See state defs from inflate.js
-	var BAD$1 = 30;       /* got a data error -- remain here until reset */
-	var TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
+	var BAD = 30;       /* got a data error -- remain here until reset */
+	var TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
 
 	/*
 	   Decode literal, length, and distance codes and write out the resulting
@@ -420,7 +421,7 @@
 	//#ifdef INFLATE_STRICT
 	            if (dist > dmax) {
 	              strm.msg = 'invalid distance too far back';
-	              state.mode = BAD$1;
+	              state.mode = BAD;
 	              break top;
 	            }
 	//#endif
@@ -433,7 +434,7 @@
 	              if (op > whave) {
 	                if (state.sane) {
 	                  strm.msg = 'invalid distance too far back';
-	                  state.mode = BAD$1;
+	                  state.mode = BAD;
 	                  break top;
 	                }
 
@@ -538,7 +539,7 @@
 	          }
 	          else {
 	            strm.msg = 'invalid distance code';
-	            state.mode = BAD$1;
+	            state.mode = BAD;
 	            break top;
 	          }
 
@@ -551,12 +552,12 @@
 	      }
 	      else if (op & 32) {                     /* end-of-block */
 	        //Tracevv((stderr, "inflate:         end of block\n"));
-	        state.mode = TYPE$1;
+	        state.mode = TYPE;
 	        break top;
 	      }
 	      else {
 	        strm.msg = 'invalid literal/length code';
-	        state.mode = BAD$1;
+	        state.mode = BAD;
 	        break top;
 	      }
 
@@ -602,13 +603,13 @@
 
 
 	var MAXBITS = 15;
-	var ENOUGH_LENS$1 = 852;
-	var ENOUGH_DISTS$1 = 592;
+	var ENOUGH_LENS = 852;
+	var ENOUGH_DISTS = 592;
 	//var ENOUGH = (ENOUGH_LENS+ENOUGH_DISTS);
 
-	var CODES$1 = 0;
-	var LENS$1 = 1;
-	var DISTS$1 = 2;
+	var CODES = 0;
+	var LENS = 1;
+	var DISTS = 2;
 
 	var lbase = [ /* Length codes 257..285 base */
 	  3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
@@ -740,7 +741,7 @@
 	      return -1;
 	    }        /* over-subscribed */
 	  }
-	  if (left > 0 && (type === CODES$1 || max !== 1)) {
+	  if (left > 0 && (type === CODES || max !== 1)) {
 	    return -1;                      /* incomplete set */
 	  }
 
@@ -791,11 +792,11 @@
 	  /* set up for code type */
 	  // poor man optimization - use if-else instead of switch,
 	  // to avoid deopts in old v8
-	  if (type === CODES$1) {
+	  if (type === CODES) {
 	    base = extra = work;    /* dummy value--not used */
 	    end = 19;
 
-	  } else if (type === LENS$1) {
+	  } else if (type === LENS) {
 	    base = lbase;
 	    base_index -= 257;
 	    extra = lext;
@@ -820,8 +821,8 @@
 	  mask = used - 1;            /* mask for comparing low */
 
 	  /* check available table space */
-	  if ((type === LENS$1 && used > ENOUGH_LENS$1) ||
-	    (type === DISTS$1 && used > ENOUGH_DISTS$1)) {
+	  if ((type === LENS && used > ENOUGH_LENS) ||
+	    (type === DISTS && used > ENOUGH_DISTS)) {
 	    return 1;
 	  }
 
@@ -892,8 +893,8 @@
 
 	      /* check for enough space */
 	      used += 1 << curr;
-	      if ((type === LENS$1 && used > ENOUGH_LENS$1) ||
-	        (type === DISTS$1 && used > ENOUGH_DISTS$1)) {
+	      if ((type === LENS && used > ENOUGH_LENS) ||
+	        (type === DISTS && used > ENOUGH_DISTS)) {
 	        return 1;
 	      }
 
@@ -947,9 +948,9 @@
 
 
 
-	var CODES = 0;
-	var LENS = 1;
-	var DISTS = 2;
+	var CODES$1 = 0;
+	var LENS$1 = 1;
+	var DISTS$1 = 2;
 
 	/* Public constants ==========================================================*/
 	/* ===========================================================================*/
@@ -986,45 +987,45 @@
 	/* ===========================================================================*/
 
 
-	var HEAD = 1;       /* i: waiting for magic header */
-	var FLAGS = 2;      /* i: waiting for method and flags (gzip) */
-	var TIME = 3;       /* i: waiting for modification time (gzip) */
-	var OS = 4;         /* i: waiting for extra flags and operating system (gzip) */
-	var EXLEN = 5;      /* i: waiting for extra length (gzip) */
-	var EXTRA = 6;      /* i: waiting for extra bytes (gzip) */
-	var NAME = 7;       /* i: waiting for end of file name (gzip) */
-	var COMMENT = 8;    /* i: waiting for end of comment (gzip) */
-	var HCRC = 9;       /* i: waiting for header crc (gzip) */
-	var DICTID = 10;    /* i: waiting for dictionary check value */
-	var DICT = 11;      /* waiting for inflateSetDictionary() call */
-	var TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
-	var TYPEDO = 13;    /* i: same, but skip check to exit inflate on new block */
-	var STORED = 14;    /* i: waiting for stored size (length and complement) */
-	var COPY_ = 15;     /* i/o: same as COPY below, but only first time in */
-	var COPY = 16;      /* i/o: waiting for input or output to copy stored block */
-	var TABLE = 17;     /* i: waiting for dynamic block table lengths */
-	var LENLENS = 18;   /* i: waiting for code length code lengths */
-	var CODELENS = 19;  /* i: waiting for length/lit and distance code lengths */
-	var LEN_ = 20;      /* i: same as LEN below, but only first time in */
-	var LEN = 21;       /* i: waiting for length/lit/eob code */
-	var LENEXT = 22;    /* i: waiting for length extra bits */
-	var DIST = 23;      /* i: waiting for distance code */
-	var DISTEXT = 24;   /* i: waiting for distance extra bits */
-	var MATCH = 25;     /* o: waiting for output space to copy string */
-	var LIT = 26;       /* o: waiting for output space to write literal */
-	var CHECK = 27;     /* i: waiting for 32-bit check value */
-	var LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
-	var DONE = 29;      /* finished check, done -- remain here until reset */
-	var BAD = 30;       /* got a data error -- remain here until reset */
-	var MEM = 31;       /* got an inflate() memory error -- remain here until reset */
-	var SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
+	var    HEAD = 1;       /* i: waiting for magic header */
+	var    FLAGS = 2;      /* i: waiting for method and flags (gzip) */
+	var    TIME = 3;       /* i: waiting for modification time (gzip) */
+	var    OS = 4;         /* i: waiting for extra flags and operating system (gzip) */
+	var    EXLEN = 5;      /* i: waiting for extra length (gzip) */
+	var    EXTRA = 6;      /* i: waiting for extra bytes (gzip) */
+	var    NAME = 7;       /* i: waiting for end of file name (gzip) */
+	var    COMMENT = 8;    /* i: waiting for end of comment (gzip) */
+	var    HCRC = 9;       /* i: waiting for header crc (gzip) */
+	var    DICTID = 10;    /* i: waiting for dictionary check value */
+	var    DICT = 11;      /* waiting for inflateSetDictionary() call */
+	var        TYPE$1 = 12;      /* i: waiting for type bits, including last-flag bit */
+	var        TYPEDO = 13;    /* i: same, but skip check to exit inflate on new block */
+	var        STORED = 14;    /* i: waiting for stored size (length and complement) */
+	var        COPY_ = 15;     /* i/o: same as COPY below, but only first time in */
+	var        COPY = 16;      /* i/o: waiting for input or output to copy stored block */
+	var        TABLE = 17;     /* i: waiting for dynamic block table lengths */
+	var        LENLENS = 18;   /* i: waiting for code length code lengths */
+	var        CODELENS = 19;  /* i: waiting for length/lit and distance code lengths */
+	var            LEN_ = 20;      /* i: same as LEN below, but only first time in */
+	var            LEN = 21;       /* i: waiting for length/lit/eob code */
+	var            LENEXT = 22;    /* i: waiting for length extra bits */
+	var            DIST = 23;      /* i: waiting for distance code */
+	var            DISTEXT = 24;   /* i: waiting for distance extra bits */
+	var            MATCH = 25;     /* o: waiting for output space to copy string */
+	var            LIT = 26;       /* o: waiting for output space to write literal */
+	var    CHECK = 27;     /* i: waiting for 32-bit check value */
+	var    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
+	var    DONE = 29;      /* finished check, done -- remain here until reset */
+	var    BAD$1 = 30;       /* got a data error -- remain here until reset */
+	var    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
+	var    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
 
 	/* ===========================================================================*/
 
 
 
-	var ENOUGH_LENS = 852;
-	var ENOUGH_DISTS = 592;
+	var ENOUGH_LENS$1 = 852;
+	var ENOUGH_DISTS$1 = 592;
 	//var ENOUGH =  (ENOUGH_LENS+ENOUGH_DISTS);
 
 	var MAX_WBITS = 15;
@@ -1116,8 +1117,8 @@
 	  state.hold = 0;
 	  state.bits = 0;
 	  //state.lencode = state.distcode = state.next = state.codes;
-	  state.lencode = state.lendyn = new common.Buf32(ENOUGH_LENS);
-	  state.distcode = state.distdyn = new common.Buf32(ENOUGH_DISTS);
+	  state.lencode = state.lendyn = new common.Buf32(ENOUGH_LENS$1);
+	  state.distcode = state.distdyn = new common.Buf32(ENOUGH_DISTS$1);
 
 	  state.sane = 1;
 	  state.back = -1;
@@ -1208,8 +1209,7 @@
 	 */
 	var virgin = true;
 
-	var lenfix;
-	var distfix; // We have no pointers in JS, so keep tables separate
+	var lenfix, distfix; // We have no pointers in JS, so keep tables separate
 
 	function fixedtables(state) {
 	  /* build fixed huffman tables if first call (may not be thread safe) */
@@ -1226,13 +1226,13 @@
 	    while (sym < 280) { state.lens[sym++] = 7; }
 	    while (sym < 288) { state.lens[sym++] = 8; }
 
-	    inftrees(LENS,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
+	    inftrees(LENS$1,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
 
 	    /* distance table */
 	    sym = 0;
 	    while (sym < 32) { state.lens[sym++] = 5; }
 
-	    inftrees(DISTS, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
+	    inftrees(DISTS$1, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
 
 	    /* do this just once */
 	    virgin = false;
@@ -1301,7 +1301,7 @@
 	  return 0;
 	}
 
-	function inflate$1(strm, flush) {
+	function inflate(strm, flush) {
 	  var state;
 	  var input, output;          // input/output buffers
 	  var next;                   /* next input INDEX */
@@ -1334,7 +1334,7 @@
 	  }
 
 	  state = strm.state;
-	  if (state.mode === TYPE) { state.mode = TYPEDO; }    /* skip check */
+	  if (state.mode === TYPE$1) { state.mode = TYPEDO; }    /* skip check */
 
 
 	  //--- LOAD() ---
@@ -1390,12 +1390,12 @@
 	        if (!(state.wrap & 1) ||   /* check if zlib header allowed */
 	          (((hold & 0xff)/*BITS(8)*/ << 8) + (hold >> 8)) % 31) {
 	          strm.msg = 'incorrect header check';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        if ((hold & 0x0f)/*BITS(4)*/ !== Z_DEFLATED) {
 	          strm.msg = 'unknown compression method';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        //--- DROPBITS(4) ---//
@@ -1408,13 +1408,13 @@
 	        }
 	        else if (len > state.wbits) {
 	          strm.msg = 'invalid window size';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        state.dmax = 1 << len;
 	        //Tracev((stderr, "inflate:   zlib header ok\n"));
 	        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
-	        state.mode = hold & 0x200 ? DICTID : TYPE;
+	        state.mode = hold & 0x200 ? DICTID : TYPE$1;
 	        //=== INITBITS();
 	        hold = 0;
 	        bits = 0;
@@ -1432,12 +1432,12 @@
 	        state.flags = hold;
 	        if ((state.flags & 0xff) !== Z_DEFLATED) {
 	          strm.msg = 'unknown compression method';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        if (state.flags & 0xe000) {
 	          strm.msg = 'unknown header flags set';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        if (state.head) {
@@ -1640,7 +1640,7 @@
 	          //===//
 	          if (hold !== (state.check & 0xffff)) {
 	            strm.msg = 'header crc mismatch';
-	            state.mode = BAD;
+	            state.mode = BAD$1;
 	            break;
 	          }
 	          //=== INITBITS();
@@ -1653,7 +1653,7 @@
 	          state.head.done = true;
 	        }
 	        strm.adler = state.check = 0;
-	        state.mode = TYPE;
+	        state.mode = TYPE$1;
 	        break;
 	      case DICTID:
 	        //=== NEEDBITS(32); */
@@ -1684,9 +1684,9 @@
 	          return Z_NEED_DICT;
 	        }
 	        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
-	        state.mode = TYPE;
+	        state.mode = TYPE$1;
 	        /* falls through */
-	      case TYPE:
+	      case TYPE$1:
 	        if (flush === Z_BLOCK || flush === Z_TREES) { break inf_leave; }
 	        /* falls through */
 	      case TYPEDO:
@@ -1738,7 +1738,7 @@
 	            break;
 	          case 3:
 	            strm.msg = 'invalid block type';
-	            state.mode = BAD;
+	            state.mode = BAD$1;
 	        }
 	        //--- DROPBITS(2) ---//
 	        hold >>>= 2;
@@ -1760,7 +1760,7 @@
 	        //===//
 	        if ((hold & 0xffff) !== ((hold >>> 16) ^ 0xffff)) {
 	          strm.msg = 'invalid stored block lengths';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        state.length = hold & 0xffff;
@@ -1793,7 +1793,7 @@
 	          break;
 	        }
 	        //Tracev((stderr, "inflate:       stored end\n"));
-	        state.mode = TYPE;
+	        state.mode = TYPE$1;
 	        break;
 	      case TABLE:
 	        //=== NEEDBITS(14); */
@@ -1822,7 +1822,7 @@
 	//#ifndef PKZIP_BUG_WORKAROUND
 	        if (state.nlen > 286 || state.ndist > 30) {
 	          strm.msg = 'too many length or distance symbols';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	//#endif
@@ -1857,12 +1857,12 @@
 	        state.lenbits = 7;
 
 	        opts = { bits: state.lenbits };
-	        ret = inftrees(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+	        ret = inftrees(CODES$1, state.lens, 0, 19, state.lencode, 0, state.work, opts);
 	        state.lenbits = opts.bits;
 
 	        if (ret) {
 	          strm.msg = 'invalid code lengths set';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        //Tracev((stderr, "inflate:       code lengths ok\n"));
@@ -1909,7 +1909,7 @@
 	              //---//
 	              if (state.have === 0) {
 	                strm.msg = 'invalid bit length repeat';
-	                state.mode = BAD;
+	                state.mode = BAD$1;
 	                break;
 	              }
 	              len = state.lens[state.have - 1];
@@ -1963,7 +1963,7 @@
 	            }
 	            if (state.have + copy > state.nlen + state.ndist) {
 	              strm.msg = 'invalid bit length repeat';
-	              state.mode = BAD;
+	              state.mode = BAD$1;
 	              break;
 	            }
 	            while (copy--) {
@@ -1973,12 +1973,12 @@
 	        }
 
 	        /* handle error breaks in while */
-	        if (state.mode === BAD) { break; }
+	        if (state.mode === BAD$1) { break; }
 
 	        /* check for end-of-block code (better have one) */
 	        if (state.lens[256] === 0) {
 	          strm.msg = 'invalid code -- missing end-of-block';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 
@@ -1988,7 +1988,7 @@
 	        state.lenbits = 9;
 
 	        opts = { bits: state.lenbits };
-	        ret = inftrees(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+	        ret = inftrees(LENS$1, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
 	        // We have separate tables & no pointers. 2 commented lines below not needed.
 	        // state.next_index = opts.table_index;
 	        state.lenbits = opts.bits;
@@ -1996,7 +1996,7 @@
 
 	        if (ret) {
 	          strm.msg = 'invalid literal/lengths set';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 
@@ -2005,7 +2005,7 @@
 	        // Switch to use dynamic table
 	        state.distcode = state.distdyn;
 	        opts = { bits: state.distbits };
-	        ret = inftrees(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+	        ret = inftrees(DISTS$1, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
 	        // We have separate tables & no pointers. 2 commented lines below not needed.
 	        // state.next_index = opts.table_index;
 	        state.distbits = opts.bits;
@@ -2013,7 +2013,7 @@
 
 	        if (ret) {
 	          strm.msg = 'invalid distances set';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        //Tracev((stderr, 'inflate:       codes ok\n'));
@@ -2045,7 +2045,7 @@
 	          bits = state.bits;
 	          //---
 
-	          if (state.mode === TYPE) {
+	          if (state.mode === TYPE$1) {
 	            state.back = -1;
 	          }
 	          break;
@@ -2106,12 +2106,12 @@
 	        if (here_op & 32) {
 	          //Tracevv((stderr, "inflate:         end of block\n"));
 	          state.back = -1;
-	          state.mode = TYPE;
+	          state.mode = TYPE$1;
 	          break;
 	        }
 	        if (here_op & 64) {
 	          strm.msg = 'invalid literal/length code';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        state.extra = here_op & 15;
@@ -2186,7 +2186,7 @@
 	        state.back += here_bits;
 	        if (here_op & 64) {
 	          strm.msg = 'invalid distance code';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	        state.offset = here_val;
@@ -2214,7 +2214,7 @@
 	//#ifdef INFLATE_STRICT
 	        if (state.offset > state.dmax) {
 	          strm.msg = 'invalid distance too far back';
-	          state.mode = BAD;
+	          state.mode = BAD$1;
 	          break;
 	        }
 	//#endif
@@ -2229,7 +2229,7 @@
 	          if (copy > state.whave) {
 	            if (state.sane) {
 	              strm.msg = 'invalid distance too far back';
-	              state.mode = BAD;
+	              state.mode = BAD$1;
 	              break;
 	            }
 	// (!) This block is disabled in zlib defaults,
@@ -2301,7 +2301,7 @@
 	          // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
 	          if ((state.flags ? hold : zswap32(hold)) !== state.check) {
 	            strm.msg = 'incorrect data check';
-	            state.mode = BAD;
+	            state.mode = BAD$1;
 	            break;
 	          }
 	          //=== INITBITS();
@@ -2324,7 +2324,7 @@
 	          //===//
 	          if (hold !== (state.total & 0xffffffff)) {
 	            strm.msg = 'incorrect length check';
-	            state.mode = BAD;
+	            state.mode = BAD$1;
 	            break;
 	          }
 	          //=== INITBITS();
@@ -2338,7 +2338,7 @@
 	      case DONE:
 	        ret = Z_STREAM_END;
 	        break inf_leave;
-	      case BAD:
+	      case BAD$1:
 	        ret = Z_DATA_ERROR;
 	        break inf_leave;
 	      case MEM:
@@ -2368,7 +2368,7 @@
 	  state.bits = bits;
 	  //---
 
-	  if (state.wsize || (_out !== strm.avail_out && state.mode < BAD &&
+	  if (state.wsize || (_out !== strm.avail_out && state.mode < BAD$1 &&
 	                      (state.mode < CHECK || flush !== Z_FINISH))) {
 	    if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) {
 	      state.mode = MEM;
@@ -2385,7 +2385,7 @@
 	      (state.flags ? crc32_1(state.check, output, _out, strm.next_out - _out) : adler32_1(state.check, output, _out, strm.next_out - _out));
 	  }
 	  strm.data_type = state.bits + (state.last ? 64 : 0) +
-	                    (state.mode === TYPE ? 128 : 0) +
+	                    (state.mode === TYPE$1 ? 128 : 0) +
 	                    (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
 	  if (((_in === 0 && _out === 0) || flush === Z_FINISH) && ret === Z_OK) {
 	    ret = Z_BUF_ERROR;
@@ -2462,7 +2462,7 @@
 	var inflateResetKeep_1 = inflateResetKeep;
 	var inflateInit_1 = inflateInit;
 	var inflateInit2_1 = inflateInit2;
-	var inflate_2$1 = inflate$1;
+	var inflate_2 = inflate;
 	var inflateEnd_1 = inflateEnd;
 	var inflateGetHeader_1 = inflateGetHeader;
 	var inflateSetDictionary_1 = inflateSetDictionary;
@@ -2478,13 +2478,13 @@
 	exports.inflateUndermine = inflateUndermine;
 	*/
 
-	var inflate_1$1 = {
+	var inflate_1 = {
 		inflateReset: inflateReset_1,
 		inflateReset2: inflateReset2_1,
 		inflateResetKeep: inflateResetKeep_1,
 		inflateInit: inflateInit_1,
 		inflateInit2: inflateInit2_1,
-		inflate: inflate_2$1,
+		inflate: inflate_2,
 		inflateEnd: inflateEnd_1,
 		inflateGetHeader: inflateGetHeader_1,
 		inflateSetDictionary: inflateSetDictionary_1,
@@ -3002,7 +3002,7 @@
 	  this.strm   = new zstream();
 	  this.strm.avail_out = 0;
 
-	  var status  = inflate_1$1.inflateInit2(
+	  var status  = inflate_1.inflateInit2(
 	    this.strm,
 	    opt.windowBits
 	  );
@@ -3013,7 +3013,7 @@
 
 	  this.header = new gzheader();
 
-	  inflate_1$1.inflateGetHeader(this.strm, this.header);
+	  inflate_1.inflateGetHeader(this.strm, this.header);
 	}
 
 	/**
@@ -3079,7 +3079,7 @@
 	      strm.avail_out = chunkSize;
 	    }
 
-	    status = inflate_1$1.inflate(strm, constants.Z_NO_FLUSH);    /* no bad return value */
+	    status = inflate_1.inflate(strm, constants.Z_NO_FLUSH);    /* no bad return value */
 
 	    if (status === constants.Z_NEED_DICT && dictionary) {
 	      // Convert data if needed
@@ -3091,7 +3091,7 @@
 	        dict = dictionary;
 	      }
 
-	      status = inflate_1$1.inflateSetDictionary(this.strm, dict);
+	      status = inflate_1.inflateSetDictionary(this.strm, dict);
 
 	    }
 
@@ -3148,7 +3148,7 @@
 
 	  // Finalize on the last chunk.
 	  if (_mode === constants.Z_FINISH) {
-	    status = inflate_1$1.inflateEnd(this.strm);
+	    status = inflate_1.inflateEnd(this.strm);
 	    this.onEnd(status);
 	    this.ended = true;
 	    return status === constants.Z_OK;
@@ -3245,7 +3245,7 @@
 	 * }
 	 * ```
 	 **/
-	function inflate(input, options) {
+	function inflate$1(input, options) {
 	  var inflator = new Inflate(options);
 
 	  inflator.push(input, true);
@@ -3268,7 +3268,7 @@
 	function inflateRaw(input, options) {
 	  options = options || {};
 	  options.raw = true;
-	  return inflate(input, options);
+	  return inflate$1(input, options);
 	}
 
 
@@ -3283,24 +3283,24 @@
 
 
 	var Inflate_1 = Inflate;
-	var inflate_2 = inflate;
+	var inflate_2$1 = inflate$1;
 	var inflateRaw_1 = inflateRaw;
-	var ungzip  = inflate;
+	var ungzip  = inflate$1;
 
-	var inflate_1 = {
+	var inflate_1$1 = {
 		Inflate: Inflate_1,
-		inflate: inflate_2,
+		inflate: inflate_2$1,
 		inflateRaw: inflateRaw_1,
 		ungzip: ungzip
 	};
 
-	function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var LITTLE_ENDIAN = true;
 
 	var _class = function () {
 		function _class(buffer) {
-			_classCallCheck$1(this, _class);
+			_classCallCheck(this, _class);
 
 			this.dataView = new DataView(buffer);
 			this.position = 0;
@@ -3416,7 +3416,7 @@
 				data = compressedData;
 				break;
 			case 8:
-				data = new Uint8Array(inflate_1.inflate(compressedData, { raw: true }));
+				data = new Uint8Array(inflate_1$1.inflate(compressedData, { raw: true }));
 				break;
 			default:
 				console.log(filename.join('') + ': unsupported compression type');
@@ -3501,14 +3501,13 @@
 		// }
 	};
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+	function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	var count = 0;
 	var THREE = void 0;
 
 	var ZipLoader = function () {
 		function ZipLoader(url) {
-			_classCallCheck(this, ZipLoader);
+			_classCallCheck$1(this, ZipLoader);
 
 			this._id = count;
 			this._listeners = {};
@@ -3535,7 +3534,7 @@
 				});
 			};
 
-			xhr.onload = function (e) {
+			xhr.onload = function () {
 
 				_this.files = parseZip(xhr.response);
 				_this.dispatch({
@@ -3561,21 +3560,18 @@
 
 		ZipLoader.prototype.extractAsText = function extractAsText(filename) {
 
+			var buffer = this.files[filename].buffer;
+
+			if (typeof TextDecoder !== 'undefined') {
+
+				return new TextDecoder().decode(buffer);
+			}
+
 			var str = '';
 
-			// Should I use FileReader? but it would be async
-			// const reader = new FileReader();
-			// const blob = new Blob(
-			// 	[ this.files[ filename ].buffer ],
-			// 	{ type: 'text/plain' }
-			// );
-			//
-			// reader.onload = () => { console.log( reader.result ) }
-			// reader.readAsText( blob );
+			for (var i = 0, l = buffer.length; i < l; i++) {
 
-			for (var i = 0, l = this.files[filename].buffer.length; i < l; i++) {
-
-				str += String.fromCharCode(this.files[filename].buffer[i]);
+				str += String.fromCharCode(buffer[i]);
 			}
 
 			return decodeURIComponent(escape(str));
@@ -3584,12 +3580,6 @@
 		ZipLoader.prototype.extractAsJSON = function extractAsJSON(filename) {
 
 			return JSON.parse(this.extractAsText(filename));
-		};
-
-		ZipLoader.prototype.loadThreeJson = function loadThreeJson(filename) {
-
-			console.log('loadThreeJson() has been changed. use loadThreeJSON()');
-			this.loadThreeJSON(filename);
 		};
 
 		ZipLoader.prototype.loadThreeJSON = function loadThreeJSON(filename) {
@@ -3707,21 +3697,16 @@
 			}
 		};
 
+		ZipLoader.install = function install(option) {
+
+			if (!!option.THREE) {
+
+				THREE = option.THREE;
+			}
+		};
+
 		return ZipLoader;
 	}();
-
-	ZipLoader.install = function (option) {
-
-		if (!!option.THREE) {
-			THREE = option.THREE;
-		}
-	};
-
-	ZipLoader.use = function (option) {
-
-		console.log('ZipLoader.use has been renamed. use ZipLoader.install()');
-		ZipLoader.install(option);
-	};
 
 	return ZipLoader;
 
