@@ -228,13 +228,13 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-};
+	static install( option ) {
 
-ZipLoader.install = ( option ) => {
+		if ( !! option.THREE ) {
 
-	if ( !! option.THREE ) {
+			THREE = option.THREE;
 
-		THREE = option.THREE;
+		}
 
 	}
 
