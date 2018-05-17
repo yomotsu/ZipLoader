@@ -1,8 +1,34 @@
 import parseZip from './parseZip.js';
+import PromiseLike from './PromiseLike.js';
 let count = 0;
 let THREE;
 
 const ZipLoader = class ZipLoader {
+
+	static unzip( blobOrFile ) {
+
+		return new PromiseLike( ( resolve ) => {
+
+			const instance = new ZipLoader();
+			const fileReader = new FileReader();
+
+			fileReader.onload = ( event ) => {
+
+				const arrayBuffer = event.target.result;
+				instance.files = parseZip( arrayBuffer );
+				resolve( instance );
+
+			};
+
+			if ( blobOrFile instanceof Blob ) {
+
+				fileReader.readAsArrayBuffer( blobOrFile );
+
+			}
+
+		} );
+
+	}
 
 	constructor( url ) {
 

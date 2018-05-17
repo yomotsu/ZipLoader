@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>=^.^=</title>
+</head>
+<body>
+<p><a href="./index.html">index</a></p>
+<h1>Select a zip file to extract</h1>
+
+select a zip file<br>
+<input id="select" type="file" accept=".zip"><br>
+
+<script src="../dist/ZipLoader.js"></script>
+<script>
+
+const $select = document.getElementById( 'select' );
+
+$select.addEventListener( 'change', function ( event ) {
+
+	const file0 = event.target.files[ 0 ];
+
+	ZipLoader.unzip( file0 ).then( function ( unziped ) {
+
+		Object.keys( unziped.files ).forEach( ( fileName ) => {
+
+			if ( unziped.files[ fileName ].buffer.length === 0 ) return;
+
+			const $div = document.createElement( 'div' );
+			const $a = document.createElement( 'a' );
+			$a.textContent = fileName;
+			$a.href = unziped.extractAsBlobUrl( fileName );
+			$div.appendChild( $a );
+			document.body.appendChild( $div );
+
+		} );
+
+	} );
+
+} );
+
+</script>
+
+</body>
+</html>
