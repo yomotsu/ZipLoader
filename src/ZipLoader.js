@@ -42,33 +42,38 @@ const ZipLoader = class ZipLoader {
 
 	load() {
 
-		const startTime = Date.now();
-		const xhr = new XMLHttpRequest();
-		xhr.open( 'GET', this.url, true );
-		xhr.responseType = 'arraybuffer';
+		return new PromiseLike( ( resolve ) => {
 
-		xhr.onprogress = ( e ) => {
+			const startTime = Date.now();
+			const xhr = new XMLHttpRequest();
+			xhr.open( 'GET', this.url, true );
+			xhr.responseType = 'arraybuffer';
 
-			this.dispatch( {
-				type: 'progress',
-				loaded: e.loaded,
-				total: e.total,
-				elapsedTime: Date.now() - startTime
-			} );
+			xhr.onprogress = ( e ) => {
 
-		};
+				this.dispatch( {
+					type: 'progress',
+					loaded: e.loaded,
+					total: e.total,
+					elapsedTime: Date.now() - startTime
+				} );
 
-		xhr.onload = () => {
+			};
 
-			this.files = parseZip( xhr.response );
-			this.dispatch( {
-				type: 'load',
-				elapsedTime: Date.now() - startTime
-			} );
+			xhr.onload = () => {
 
-		};
+				this.files = parseZip( xhr.response );
+				this.dispatch( {
+					type: 'load',
+					elapsedTime: Date.now() - startTime
+				} );
+				resolve();
 
-		xhr.send();
+			};
+
+			xhr.send();
+
+		} );
 
 	}
 

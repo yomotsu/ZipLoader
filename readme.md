@@ -51,23 +51,49 @@ As the result, you will get `files` property under the instance, that consists o
 ```javascript
 var loader = new ZipLoader( './foldername.zip' );
 
-loader.on( 'progress', function ( e ) {
+loader.on( 'progress', function ( event ) {
 
-  console.log( 'loading', e.loaded, e.total );
+  console.log( 'loading', event.loaded, event.total );
 
 } );
 
-loader.on( 'load', function ( e ) {
+loader.on( 'load', function ( event ) {
 
   console.log( 'loaded!' );
   console.log( loader.files );
-  
+
   var json = loader.extractAsJSON( 'foldername/data.json' );
   console.log( json );
 
 } );
 
 loader.load();
+```
+
+It returns Promise as well.
+
+```javascript
+var loader = new ZipLoader( './foldername.zip' );
+
+loader.load.then( function () {
+
+  console.log( 'loaded!' );
+  console.log( loader.files );
+
+  var json = loader.extractAsJSON( 'foldername/data.json' );
+  console.log( json );
+
+} );
+```
+
+## unzip Blob/File directly
+
+```javascript
+ZipLoader.unzip( blobOrFile ).then( function ( ZipLoaderInstance ) {
+
+  console.log( ZipLoaderInstance.files );
+
+} );
 ```
 
 ## Pick up unzipped files
