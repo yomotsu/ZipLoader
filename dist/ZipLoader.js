@@ -3502,12 +3502,52 @@
 	};
 
 	function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var isPromiseSuppoted = typeof Promise === 'function';
+	var PromiseLike$1 = isPromiseSuppoted ? Promise : function PromiseLike(executor) {
+		_classCallCheck$1(this, PromiseLike);
+
+		var callback = function callback() {};
+		var resolve = function resolve() {
+			callback();
+		};
+		executor(resolve);
+
+		return {
+			then: function then(_callback) {
+				callback = _callback;
+			}
+		};
+	};
+
+	function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	var count = 0;
 	var THREE = void 0;
 
 	var ZipLoader = function () {
+		ZipLoader.unzip = function unzip(blobOrFile) {
+
+			return new PromiseLike$1(function (resolve) {
+
+				var instance = new ZipLoader();
+				var fileReader = new FileReader();
+
+				fileReader.onload = function (event) {
+
+					var arrayBuffer = event.target.result;
+					instance.files = parseZip(arrayBuffer);
+					resolve(instance);
+				};
+
+				if (blobOrFile instanceof Blob) {
+
+					fileReader.readAsArrayBuffer(blobOrFile);
+				}
+			});
+		};
+
 		function ZipLoader(url) {
-			_classCallCheck$1(this, ZipLoader);
+			_classCallCheck$2(this, ZipLoader);
 
 			this._id = count;
 			this._listeners = {};
@@ -3519,31 +3559,35 @@
 		ZipLoader.prototype.load = function load() {
 			var _this = this;
 
-			var startTime = Date.now();
-			var xhr = new XMLHttpRequest();
-			xhr.open('GET', this.url, true);
-			xhr.responseType = 'arraybuffer';
+			return new PromiseLike$1(function (resolve) {
 
-			xhr.onprogress = function (e) {
+				var startTime = Date.now();
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', _this.url, true);
+				xhr.responseType = 'arraybuffer';
 
-				_this.dispatch({
-					type: 'progress',
-					loaded: e.loaded,
-					total: e.total,
-					elapsedTime: Date.now() - startTime
-				});
-			};
+				xhr.onprogress = function (e) {
 
-			xhr.onload = function () {
+					_this.dispatch({
+						type: 'progress',
+						loaded: e.loaded,
+						total: e.total,
+						elapsedTime: Date.now() - startTime
+					});
+				};
 
-				_this.files = parseZip(xhr.response);
-				_this.dispatch({
-					type: 'load',
-					elapsedTime: Date.now() - startTime
-				});
-			};
+				xhr.onload = function () {
 
-			xhr.send();
+					_this.files = parseZip(xhr.response);
+					_this.dispatch({
+						type: 'load',
+						elapsedTime: Date.now() - startTime
+					});
+					resolve();
+				};
+
+				xhr.send();
+			});
 		};
 
 		ZipLoader.prototype.extractAsBlobUrl = function extractAsBlobUrl(filename, type) {
