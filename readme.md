@@ -75,7 +75,7 @@ It returns Promise as well.
 ```javascript
 var loader = new ZipLoader( './foldername.zip' );
 
-loader.load.then( function () {
+loader.load().then( function () {
 
   console.log( 'loaded!' );
   console.log( loader.files );
