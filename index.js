@@ -1,1 +1,1 @@
-export * from "./dist/ZipLoader";
+export {default} from "./dist/ZipLoader";
