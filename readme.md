@@ -67,6 +67,12 @@ loader.on( 'load', function ( event ) {
 
 } );
 
+loader.on( 'error', function ( event ) {
+
+  console.log( 'error', event.error );
+
+} );
+
 loader.load();
 ```
 

@@ -71,6 +71,15 @@ const ZipLoader = class ZipLoader {
 
 			};
 
+			xhr.onerror = ( e ) => {
+
+				this.dispatch( {
+					type: 'error',
+					error: e
+				} );
+
+			};
+
 			xhr.send();
 
 		} );
