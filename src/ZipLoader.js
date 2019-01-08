@@ -71,7 +71,7 @@ const ZipLoader = class ZipLoader {
 
 			};
 
-			xhr.onerror = ( e ) => {
+			xhr.onerror = ( event ) => {
 
 				this.dispatch( {
 					type: 'error',
