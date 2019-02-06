@@ -75,7 +75,7 @@ const ZipLoader = class ZipLoader {
 
 				this.dispatch( {
 					type: 'error',
-					error: e
+					error: event
 				} );
 
 			};
