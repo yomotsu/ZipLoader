@@ -34,6 +34,7 @@ const ZipLoader = class ZipLoader {
 
 		this._id = count;
 		this._listeners = {};
+		this.xhr = null;
 		this.url = url;
 		this.files = null;
 		count ++;
@@ -45,7 +46,7 @@ const ZipLoader = class ZipLoader {
 		return new PromiseLike( ( resolve ) => {
 
 			const startTime = Date.now();
-			const xhr = new XMLHttpRequest();
+			const xhr = this.xhr = new XMLHttpRequest();
 			xhr.open( 'GET', this.url, true );
 			xhr.responseType = 'arraybuffer';
 
