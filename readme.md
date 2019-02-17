@@ -18,9 +18,9 @@ Both standalone version and [NPM module](https://www.npmjs.com/package/zip-loade
 
 ### Standalone
 
-Copy ZipLoader.js from `/dist/ZipLoader.js` and place it in your project.
+Copy zip-loader.js from `/dist/zip-loader.js` and place it in your project.
 ```html
-<script src="./js/ZipLoader.js"></script>
+<script src="./js/zip-loader.js"></script>
 ```
 
 ### NPM
