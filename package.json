@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "rollup --config --watch",
-    "build": "rollup --config && terser 'dist/ZipLoader.js' -o 'dist/ZipLoader.min.js' --comments '/^!/'"
+    "build": "rollup --config && terser 'dist/zip-loader.js' -o 'dist/zip-loader.min.js' --comments '/^!/'"
   },
   "babel": {
     "presets": [
