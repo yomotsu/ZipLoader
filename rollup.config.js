@@ -1,6 +1,7 @@
-import nodeResolve from 'rollup-plugin-node-resolve'
-import commonjs    from 'rollup-plugin-commonjs'
-import babel       from 'rollup-plugin-babel'
+import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs    from 'rollup-plugin-commonjs';
+import babel       from 'rollup-plugin-babel';
+import pkg         from './package.json';
 
 const license = `/*!
  * ZipLoader
@@ -17,16 +18,16 @@ export default {
 		{
 			format: 'umd',
 			name: 'ZipLoader',
-			file: 'dist/ZipLoader.js',
+			file: pkg.main,
 			banner: license,
 			indent: '\t',
 		},
 		{
 			format: 'es',
-			file: 'dist/ZipLoader.module.js',
+			file: pkg.module,
 			banner: license,
 			indent: '\t',
-		},
+		}
 	],
 	sourceMap: false,
 	plugins: [
@@ -40,20 +41,6 @@ export default {
 			exclude: [],
 			sourceMap: true,
 		} ),
-		babel( {
-			exclude: 'node_modules/**',
-			presets: [
-				[ 'env', {
-					targets: {
-						browsers: [
-							'last 2 versions',
-							'ie >= 11'
-						]
-					},
-					loose: true,
-					modules: false
-				} ]
-			]
-		} )
+		babel( { exclude: 'node_modules/**' } )
 	]
 };
