@@ -92,6 +92,8 @@ loader.load().then( function () {
 } );
 ```
 
+The XHR can be accessed with `loader.xhr`.
+
 ## unzip Blob/File directly
 
 ```javascript
