@@ -1,7 +1,6 @@
-
 const LITTLE_ENDIAN = true;
 
-export default class {
+export class DataReader {
 
 	constructor( buffer ) {
 

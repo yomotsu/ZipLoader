@@ -1,13 +1,13 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
-import commonjs    from 'rollup-plugin-commonjs';
-import babel       from 'rollup-plugin-babel';
-import pkg         from './package.json';
+import pkg from './package.json' assert { type: 'json' };
+import babel from '@rollup/plugin-babel';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 const license = `/*!
- * ZipLoader
+ * ${ pkg.name }
+ * https://github.com/${ pkg.repository }
  * (c) 2017 @yomotsu
  * Released under the MIT License.
- * 
+ *
  * ZipLoader uses the library pako released under the MIT license :
  * https://github.com/nodeca/pako/blob/master/LICENSE
  */`
@@ -34,12 +34,7 @@ export default {
 		nodeResolve( {
 			jsnext: true,
 			browser: true,
-			preferBuiltins: false
-		} ),
-		commonjs( {
-			include: [ 'node_modules/**' ],
-			exclude: [],
-			sourceMap: true,
+			preferBuiltins: false,
 		} ),
 		babel( { exclude: 'node_modules/**' } )
 	]

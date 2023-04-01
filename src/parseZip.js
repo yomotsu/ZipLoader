@@ -1,11 +1,11 @@
-import pako from 'pako/lib/inflate.js';
-import DataReader from './DataReader.js';
+import { inflate } from 'pako';
+import { DataReader } from './DataReader.js';
 
 const LOCAL_FILE_HEADER = 0x04034b50;
 const CENTRAL_DIRECTORY = 0x02014b50;
 // const END_OF_CENTRAL_DIRECTORY = 0x06054b50;
 
-const parseZip = ( buffer ) => {
+export const parseZip = ( buffer ) => {
 
 	const reader = new DataReader( buffer );
 	const files = {};
@@ -38,7 +38,7 @@ const parseZip = ( buffer ) => {
 };
 
 // # Local file header
-// 
+//
 // | Offset |  Length  | Contents                                 |
 // | ------ | -------- | ---------------------------------------- |
 // |   0    |  4 bytes | Local file header signature (0x04034b50) |
@@ -101,7 +101,7 @@ const parseLocalFile = ( reader ) => {
 			data = compressedData;
 			break;
 		case 8:
-			data = new Uint8Array( pako.inflate( compressedData, { raw: true } ) );
+			data = new Uint8Array( inflate( compressedData, { raw: true } ) );
 			break;
 		default:
 			console.log( `${ filename.join( '' ) }: unsupported compression type` );
@@ -187,5 +187,3 @@ const parseCentralDirectory = ( reader ) => {
 	// }
 
 };
-
-export default parseZip;

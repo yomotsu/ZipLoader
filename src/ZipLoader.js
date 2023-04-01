@@ -1,13 +1,10 @@
-import parseZip from './parseZip.js';
-import PromiseLike from './PromiseLike.js';
-let count = 0;
-let THREE;
+import { parseZip } from './parseZip.js';
 
 const ZipLoader = class ZipLoader {
 
 	static unzip( blobOrFile ) {
 
-		return new PromiseLike( ( resolve ) => {
+		return new Promise( ( resolve ) => {
 
 			const instance = new ZipLoader();
 			const fileReader = new FileReader();
@@ -32,17 +29,15 @@ const ZipLoader = class ZipLoader {
 
 	constructor( url ) {
 
-		this._id = count;
 		this._listeners = {};
 		this.url = url;
 		this.files = null;
-		count ++;
 
 	}
 
 	load() {
 
-		return new PromiseLike( ( resolve ) => {
+		return new Promise( ( resolve ) => {
 
 			const startTime = Date.now();
 			const xhr = new XMLHttpRequest();
@@ -128,56 +123,6 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-	loadThreeJSON( filename ) {
-
-		const json = this.extractAsJSON( filename );
-		const dirName = filename.replace( /\/.+\.json$/, '/' );
-		const pattern = `__ziploader_${ this._id }__`;
-		const regex   = new RegExp( pattern );
-
-		if ( ! THREE.Loader.Handlers.handlers.indexOf( regex ) !== - 1 ) {
-
-			THREE.Loader.Handlers.add(
-				regex,
-				{
-					load: ( filename ) => {
-
-						return this.loadThreeTexture( filename.replace( regex, '' ) );
-
-					}
-				}
-			);
-
-		}
-
-		return THREE.JSONLoader.prototype.parse( json, pattern + dirName );
-
-	}
-
-	loadThreeTexture( filename ) {
-
-		const texture = new THREE.Texture();
-		const type = ( /\.jpg$/ ).test( filename ) ? 'image/jpeg' :
-		             ( /\.png$/ ).test( filename ) ? 'image/png' :
-		             ( /\.gif$/ ).test( filename ) ? 'image/gif' :
-		             undefined;
-		const blob = new Blob( [ this.files[ filename ].buffer ], { type: type } );
-
-		const onload = () => {
-
-			texture.needsUpdate = true;
-			texture.image.removeEventListener( 'load', onload );
-			URL.revokeObjectURL( texture.image.src );
-
-		};
-
-		texture.image = new Image();
-		texture.image.addEventListener( 'load', onload );
-		texture.image.src = URL.createObjectURL( blob );
-		return texture;
-
-	}
-
 	on( type, listener ) {
 
 		if ( ! this._listeners[ type ] ) {
@@ -248,33 +193,6 @@ const ZipLoader = class ZipLoader {
 		}
 
 		delete this.files;
-
-		if ( !! THREE ) {
-
-			const pattern = `__ziploader_${ this._id }__`;
-
-			THREE.Loader.Handlers.handlers.some( ( el, i ) => {
-
-				if ( el instanceof RegExp && el.source === pattern ) {
-
-					THREE.Loader.Handlers.handlers.splice( i, 2 );
-					return true;
-
-				}
-
-			} );
-
-		}
-
-	}
-
-	static install( option ) {
-
-		if ( !! option.THREE ) {
-
-			THREE = option.THREE;
-
-		}
 
 	}
 
