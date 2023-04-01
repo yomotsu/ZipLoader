@@ -1,4 +1,4 @@
-import { inflate } from 'pako';
+import { inflate } from 'pako/dist/pako_inflate.min.js';
 import { DataReader } from './DataReader.js';
 
 const LOCAL_FILE_HEADER = 0x04034b50;

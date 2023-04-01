@@ -2,6 +2,7 @@ const LITTLE_ENDIAN = true;
 
 export class DataReader {
 
+	/** @param {ArrayBuffer} buffer */
 	constructor( buffer ) {
 
 		this.dataView = new DataView( buffer );
@@ -9,12 +10,14 @@ export class DataReader {
 
 	}
 
+	/** @param {number} length */
 	skip( length ) {
 
 		this.position += length;
 
 	}
 
+	/** @param {number} length */
 	readBytes( length ) {
 
 		const type = length === 4 ? 'getUint32' :

@@ -1,5 +1,6 @@
 import pkg from './package.json' assert { type: 'json' };
 import babel from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
 const license = `/*!
@@ -7,9 +8,7 @@ const license = `/*!
  * https://github.com/${ pkg.repository }
  * (c) 2017 @yomotsu
  * Released under the MIT License.
- *
- * ZipLoader uses the library pako released under the MIT license :
- * https://github.com/nodeca/pako/blob/master/LICENSE
+ * ZipLoader uses pako, released under the MIT license.
  */`
 
 export default {
@@ -29,13 +28,17 @@ export default {
 			indent: '\t',
 		}
 	],
-	sourceMap: false,
 	plugins: [
 		nodeResolve( {
 			jsnext: true,
 			browser: true,
 			preferBuiltins: false,
 		} ),
-		babel( { exclude: 'node_modules/**' } )
+		commonjs(),
+		babel( {
+			exclude: 'node_modules/**',
+			babelHelpers: 'runtime',
+			skipPreflightCheck: true,
+		} )
 	]
 };

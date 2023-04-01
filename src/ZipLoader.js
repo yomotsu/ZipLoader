@@ -1,7 +1,17 @@
 import { parseZip } from './parseZip.js';
 
+/**
+ * @class ZipLoader
+ * @classdesc A class for loading and extracting files from a ZIP archive.
+ */
 const ZipLoader = class ZipLoader {
 
+	/**
+   * @function
+   * @description Loads a zip archive from a File or Blob object and returns a Promise that resolves with a new ZipLoader instance
+   * @param {Blob|File} blobOrFile - The Blob or File object to load
+   * @returns {Promise<ZipLoader>}
+   */
 	static unzip( blobOrFile ) {
 
 		return new Promise( ( resolve ) => {
@@ -27,15 +37,33 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+	/**
+	 * @constructor
+	 * @param {string} url
+	 */
 	constructor( url ) {
 
+		/** @private */
 		this._listeners = {};
+
+		/** @type {String|undefined} */
 		this.url = url;
+
+		/** @type {import('./types.ts').Files | null} */
 		this.files = null;
 
 	}
 
+	/**
+	 * Loads the ZIP archive specified by the url property.
+	 * Returns a Promise that resolves when the ZIP archive has been loaded and extracted.
+	 *
+	 * @async
+	 * @returns {Promise<Files>} A Promise that resolves when the ZIP archive has been loaded and extracted.
+	 */
 	load() {
+
+		this.clear();
 
 		return new Promise( ( resolve ) => {
 
@@ -62,7 +90,7 @@ const ZipLoader = class ZipLoader {
 					type: 'load',
 					elapsedTime: Date.now() - startTime
 				} );
-				resolve();
+				resolve( this.files );
 
 			};
 
@@ -81,6 +109,13 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+	/**
+	 * Extracts a file from the loaded ZIP archive and returns it as a Blob URL.
+	 *
+	 * @param {string} filename - The name of the file to extract.
+	 * @param {string} type - The MIME type of the file.
+	 * @returns {string} The Blob URL of the extracted file.
+	 */
 	extractAsBlobUrl( filename, type ) {
 
 		if ( this.files[ filename ].url ) {
@@ -95,6 +130,10 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+  /**
+   * @param {string} filename
+   * @returns {string|undefined}
+   */
 	extractAsText( filename ) {
 
 		const buffer = this.files[ filename ].buffer;
@@ -117,12 +156,21 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+  /**
+   * @param {string} filename
+   * @returns {*}
+   */
 	extractAsJSON( filename ) {
 
 		return JSON.parse( this.extractAsText( filename ) );
 
 	}
 
+	/**
+	 * Adds the specified event listener.
+	 * @param {string} type event name
+	 * @param {import('./types.ts').Listener} listener handler function
+	 */
 	on( type, listener ) {
 
 		if ( ! this._listeners[ type ] ) {
@@ -139,6 +187,11 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+	/**
+	 * Removes the specified event listener
+	 * @param {string} type event name
+	 * @param {import('./types.ts').Listener} listener handler function
+	 */
 	off( type, listener ) {
 
 		const listenerArray = this._listeners[ type ];
@@ -176,6 +229,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
+  /** @param {string=} filename */
 	clear( filename ) {
 
 		if ( !! filename ) {
@@ -192,7 +246,7 @@ const ZipLoader = class ZipLoader {
 
 		}
 
-		delete this.files;
+		this.files = null;
 
 	}
 

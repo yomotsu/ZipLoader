@@ -7,6 +7,7 @@
   "main": "dist/zip-loader.js",
   "jsnext:main": "dist/zip-loader.module.js",
   "module": "dist/zip-loader.module.js",
+  "types": "dist/ZipLoader.d.ts",
   "dependencies": {
     "pako": "^2.1.0"
   },
@@ -16,13 +17,16 @@
     "@babel/preset-env": "^7.21.4",
     "@babel/runtime": "^7.21.0",
     "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "rollup": "^3.20.2",
-    "terser": "^5.16.8"
+    "terser": "^5.16.8",
+    "typescript": "^5.0.3"
   },
   "scripts": {
     "dev": "rollup --config --watch",
-    "build": "rollup --config && terser 'dist/zip-loader.js' -o 'dist/zip-loader.min.js' --comments '/^!/'"
+    "build": "rollup --config && terser 'dist/zip-loader.js' -o 'dist/zip-loader.min.js' --comments '/^!/'",
+    "types": "tsc -p src/ZipLoader.js --declaration --allowJs --emitDeclarationOnly --outDir dist"
   },
   "babel": {
     "presets": [
@@ -35,7 +39,8 @@
     ]
   },
   "browserslist": [
-    "last 2 versions",
-    "ie >= 11"
+    "> 1%",
+    "last 3 versions",
+    "not dead"
   ]
 }
