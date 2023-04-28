@@ -7,11 +7,11 @@ import { parseZip } from './parseZip.js';
 const ZipLoader = class ZipLoader {
 
 	/**
-   * @function
-   * @description Loads a zip archive from a File or Blob object and returns a Promise that resolves with a new ZipLoader instance
-   * @param {Blob|File} blobOrFile - The Blob or File object to load
-   * @returns {Promise<ZipLoader>}
-   */
+	 * @function
+	 * @description Loads a zip archive from a File or Blob object and returns a Promise that resolves with a new ZipLoader instance
+	 * @param {Blob|File} blobOrFile - The Blob or File object to load
+	 * @returns {Promise<ZipLoader>}
+	 */
 	static unzip( blobOrFile ) {
 
 		return new Promise( ( resolve ) => {
@@ -130,10 +130,10 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-  /**
-   * @param {string} filename
-   * @returns {string|undefined}
-   */
+	/**
+	 * @param {string} filename
+	 * @returns {string|undefined}
+	 */
 	extractAsText( filename ) {
 
 		const buffer = this.files[ filename ].buffer;
@@ -156,10 +156,10 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-  /**
-   * @param {string} filename
-   * @returns {*}
-   */
+	/**
+	 * @param {string} filename
+	 * @returns {*}
+	 */
 	extractAsJSON( filename ) {
 
 		return JSON.parse( this.extractAsText( filename ) );
@@ -229,7 +229,7 @@ const ZipLoader = class ZipLoader {
 
 	}
 
-  /** @param {string=} filename */
+	/** @param {string=} filename */
 	clear( filename ) {
 
 		if ( !! filename ) {
