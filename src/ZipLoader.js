@@ -40,14 +40,18 @@ const ZipLoader = class ZipLoader {
 	/**
 	 * @constructor
 	 * @param {string} url
+	 * @param {RequestInit} fetchOptions
 	 */
-	constructor( url ) {
+	constructor( url, fetchOptions = {} ) {
 
 		/** @private */
 		this._listeners = {};
 
 		/** @type {String|undefined} */
 		this.url = url;
+
+		/** @type {RequestInit} */
+		this.fetchOptions = fetchOptions;
 
 		/** @type {import('./types.ts').Files | null} */
 		this.files = null;
@@ -61,51 +65,60 @@ const ZipLoader = class ZipLoader {
 	 * @async
 	 * @returns {Promise<Files>} A Promise that resolves when the ZIP archive has been loaded and extracted.
 	 */
-	load() {
+	async load() {
 
 		this.clear();
 
-		return new Promise( ( resolve ) => {
+		const startTime = Date.now();
+		const res = await fetch( this.url, this.fetchOptions ).then( ( res ) => {
 
-			const startTime = Date.now();
-			const xhr = new XMLHttpRequest();
-			xhr.open( 'GET', this.url, true );
-			xhr.responseType = 'arraybuffer';
+			const that = this;
+			const total = parseInt( res.headers.get( 'content-length' ), 10 );
+			let loaded = 0;
 
-			xhr.onprogress = ( e ) => {
+			return new Response( new ReadableStream( {
+				start( controller ) {
+					const reader = res.body.getReader();
 
-				this.dispatch( {
-					type: 'progress',
-					loaded: e.loaded,
-					total: e.total,
-					elapsedTime: Date.now() - startTime
-				} );
+					const pump = async () => {
+						const { done, value } = await reader.read();
+						if ( done ) {
 
-			};
+							controller.close();
+							return;
 
-			xhr.onload = () => {
+						}
+						loaded += value.byteLength;
+						controller.enqueue( value );
+						that.dispatch( {
+							type: 'progress',
+							loaded,
+							total,
+							elapsedTime: Date.now() - startTime,
+						} );
+						pump();
+					};
+					pump();
+				}
+			} ) );
 
-				this.files = parseZip( xhr.response );
-				this.dispatch( {
-					type: 'load',
-					elapsedTime: Date.now() - startTime
-				} );
-				resolve( this.files );
+		} ).catch( ( error ) => {
 
-			};
-
-			xhr.onerror = ( event ) => {
-
-				this.dispatch( {
-					type: 'error',
-					error: event
-				} );
-
-			};
-
-			xhr.send();
+			this.dispatch( {
+				type: 'error',
+				error
+			} );
 
 		} );
+
+		const arrayBuffer = await res.arrayBuffer();
+		this.files = parseZip( arrayBuffer );
+		this.dispatch( {
+			type: 'load',
+			elapsedTime: Date.now() - startTime,
+		} );
+
+		return this.files;
 
 	}
 
