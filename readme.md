@@ -38,36 +38,35 @@ import ZipLoader from 'zip-loader';
 Make a loader instance with a target zip url. Then, `load()` it.
 
 ```javascript
-var loader = new ZipLoader( './foldername.zip' );
+const fetchOptions = { /* same as the second argument of `fetch()` */}
+const loader = new ZipLoader( './foldername.zip', fetchOptions );
 loader.load();
 ```
 
-You can get loading progress in `'progress'` event while loading.
-
-When it's done, the zip file is automatically unzipped and `'load'` event will be triggered.
-
-As the result, you will get `files` property under the instance, that consists of filename and binary buffer.
+You can track the loading progress through the `'progress'` event.  
+Once complete, the zip file is automatically unzipped, and the `'load'` event is triggered.  
+As a result, the instance will include a `files` property, which contains the filename and binary buffer
 
 ```javascript
-var loader = new ZipLoader( './foldername.zip' );
+const loader = new ZipLoader( './foldername.zip' );
 
-loader.on( 'progress', function ( event ) {
+loader.on( 'progress', ( event ) => {
 
   console.log( 'loading', event.loaded, event.total );
 
 } );
 
-loader.on( 'load', function ( event ) {
+loader.on( 'load', ( event ) => {
 
   console.log( 'loaded!' );
   console.log( loader.files );
 
-  var json = loader.extractAsJSON( 'foldername/data.json' );
+  const json = loader.extractAsJSON( 'foldername/data.json' );
   console.log( json );
 
 } );
 
-loader.on( 'error', function ( event ) {
+loader.on( 'error', ( event ) => {
 
   console.log( 'error', event.error );
 
@@ -76,30 +75,25 @@ loader.on( 'error', function ( event ) {
 loader.load();
 ```
 
-It returns Promise as well.
+It also returns a `Promise`.
 
 ```javascript
-var loader = new ZipLoader( './foldername.zip' );
+const loader = new ZipLoader( './foldername.zip' );
 
-loader.load().then( function () {
+await loader.load();
 
-  console.log( 'loaded!' );
-  console.log( loader.files );
+console.log( 'loaded!' );
+console.log( loader.files );
 
-  var json = loader.extractAsJSON( 'foldername/data.json' );
-  console.log( json );
-
-} );
+const json = loader.extractAsJSON( 'foldername/data.json' );
+console.log( json );
 ```
 
 ## unzip Blob/File directly
 
 ```javascript
-ZipLoader.unzip( blobOrFile ).then( function ( ZipLoaderInstance ) {
-
-  console.log( ZipLoaderInstance.files );
-
-} );
+const zipLoaderInstance = await ZipLoader.unzip( blobOrFile );
+console.log( zipLoaderInstance.files );
 ```
 
 ## Pick up unzipped files
@@ -115,12 +109,12 @@ The 1st augment is `key` of `loader.files` object, that represents "path + filen
 ### As a text
 
 ```javascript
-var string = loader.extractAsText( 'foldername/text.txt' );
+const string = loader.extractAsText( 'foldername/text.txt' );
 ```
 
 ### As a JSON
 ```javascript
-var json = loader.extractAsJSON( 'foldername/data.json' );
+const json = loader.extractAsJSON( 'foldername/data.json' );
 ```
 
 ### As an URL
@@ -128,44 +122,17 @@ var json = loader.extractAsJSON( 'foldername/data.json' );
 The 2nd arguments is its MIMEType.
 
 ```javascript
-var url = loader.extractAsBlobUrl( 'foldername/pict.jpg', 'image/jpeg' );
+const url = loader.extractAsBlobUrl( 'foldername/pict.jpg', 'image/jpeg' );
 ```
-
----
-
-## with three.js
-
-ZipLoader can provide altanative JSONLoader for zipped JSON.
-
-```javascript
-// At first, prepare to use THREE.js in ZipLoader
-ZipLoader.install( { THREE: THREE } );
-
-var loader = new ZipLoader( './assets.zip' );
-
-loader.on( 'load', function ( e ) {
-
-  var result = loader.loadThreeJSON( 'assets/threejs-model.json' );
-
-  var mesh = new THREE.Mesh(
-    result.geometry,
-    new THREE.MultiMaterial( result.materials )
-  );
-
-  scene.add( mesh );
-
-} );
-```
-
 
 ## Clear cache
 
-After unzipped, loader instance will store the data.
-When you don't need the data, you can clear stored cache.
+After the buffer is unzipped, the loader instance will store the data.  
+When the data is no longer needed, you can clear the stored cache.
 
 To clear single cache
 ```javascript
-myImg.onload = function () {
+myImg.onload = () => {
 
   loader.clear( 'foldername/pict.jpg' );
 
